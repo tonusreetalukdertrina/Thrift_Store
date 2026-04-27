@@ -19,14 +19,8 @@ class Category extends Model
         'is_active' => 'boolean',
     ];
 
-    public function products()
+    public function listings()
     {
-        return $this->hasMany(Product::class, 'category_id', 'category_id');
-    }
-
-    public function subcategories()
-    {
-        return $this->hasMany(Subcategory::class, 'category_id', 'category_id')
-                    ->where('is_active', true);
+        return $this->hasMany(Listing::class, 'category_id', 'category_id');
     }
 }

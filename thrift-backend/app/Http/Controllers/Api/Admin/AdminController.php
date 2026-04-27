@@ -5,10 +5,9 @@ namespace App\Http\Controllers\Api\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Helpers\ApiResponse;
 use App\Models\AuditLog;
+use App\Models\Listing;
 use App\Models\Notification;
-use App\Models\Order;
 use App\Models\Payment;
-use App\Models\Product;
 use App\Models\Report;
 use App\Models\Review;
 use App\Models\User;
@@ -18,9 +17,6 @@ use Illuminate\Support\Str;
 
 class AdminController extends Controller
 {
-    // ── Users ───────────────────────────────────────────────────
-
-    // GET /api/v1/admin/users
     public function listUsers(Request $request)
     {
         $query = User::query();
@@ -47,7 +43,6 @@ class AdminController extends Controller
         return ApiResponse::success($users);
     }
 
-    // PATCH /api/v1/admin/users/{id}/block
     public function blockUser(string $id)
     {
         $admin = auth('api')->user();
@@ -63,12 +58,10 @@ class AdminController extends Controller
 
         $user->update(['is_blocked' => true]);
 
-        // Auto-archive all active listings
-        Product::where('seller_id', $id)
+        Listing::where('seller_id', $id)
             ->where('status', 'active')
             ->update(['status' => 'archived']);
 
-        // Notify user
         Notification::create([
             'notification_id' => Str::uuid(),
             'user_id'         => $id,
@@ -84,7 +77,6 @@ class AdminController extends Controller
         return ApiResponse::success(null, 'User blocked and listings archived');
     }
 
-    // PATCH /api/v1/admin/users/{id}/unblock
     public function unblockUser(string $id)
     {
         $admin = auth('api')->user();
@@ -109,12 +101,9 @@ class AdminController extends Controller
         return ApiResponse::success(null, 'User unblocked successfully');
     }
 
-    // ── Products ────────────────────────────────────────────────
-
-    // GET /api/v1/admin/products
-    public function listProducts(Request $request)
+    public function listListings(Request $request)
     {
-        $query = Product::with([
+        $query = Listing::with([
             'seller:user_id,name,email',
             'category:category_id,category_name',
         ]);
@@ -127,42 +116,69 @@ class AdminController extends Controller
             $query->where('title', 'ilike', '%' . $request->q . '%');
         }
 
-        $products = $query->orderBy('created_at', 'desc')->paginate(20);
+        $listings = $query->orderBy('created_at', 'desc')->paginate(20);
 
-        return ApiResponse::success($products);
+        return ApiResponse::success($listings);
     }
 
-    // DELETE /api/v1/admin/products/{id}
-    public function removeProduct(string $id)
+    public function removeListing(string $id)
     {
         $admin   = auth('api')->user();
-        $product = Product::where('product_id', $id)->first();
+        $listing = Listing::where('listing_id', $id)->first();
 
-        if (! $product) {
-            return ApiResponse::error('Product not found', 404);
+        if (! $listing) {
+            return ApiResponse::error('Listing not found', 404);
         }
 
-        $product->update(['status' => 'archived']);
+        $listing->update(['status' => 'archived']);
 
         Notification::create([
             'notification_id' => Str::uuid(),
-            'user_id'         => $product->seller_id,
+            'user_id'         => $listing->seller_id,
             'type'            => 'listing_removed',
-            'body'            => "Your listing \"{$product->title}\" has been removed by an administrator for violating platform policy.",
+            'body'            => "Your listing \"{$listing->title}\" has been removed by an administrator for violating platform policy.",
             'status'          => 'unread',
         ]);
 
-        AuditService::log($admin->user_id, 'remove_product', 'product', $id, [
-            'product_title' => $product->title,
-            'seller_id'     => $product->seller_id,
+        AuditService::log($admin->user_id, 'remove_listing', 'listing', $id, [
+            'listing_title' => $listing->title,
+            'seller_id'     => $listing->seller_id,
         ]);
 
         return ApiResponse::success(null, 'Listing removed and seller notified');
     }
 
-    // ── Reviews ─────────────────────────────────────────────────
+    public function restoreListing(string $id)
+    {
+        $admin   = auth('api')->user();
+        $listing = Listing::where('listing_id', $id)->first();
 
-    // DELETE /api/v1/admin/reviews/{id}
+        if (! $listing) {
+            return ApiResponse::error('Listing not found', 404);
+        }
+
+        if ($listing->status !== 'archived') {
+            return ApiResponse::error('Only archived listings can be restored', 422);
+        }
+
+        $listing->update(['status' => 'active']);
+
+        Notification::create([
+            'notification_id' => Str::uuid(),
+            'user_id'         => $listing->seller_id,
+            'type'            => 'listing_restored',
+            'body'            => "Your listing \"{$listing->title}\" has been restored by an administrator.",
+            'status'          => 'unread',
+        ]);
+
+        AuditService::log($admin->user_id, 'restore_listing', 'listing', $id, [
+            'listing_title' => $listing->title,
+            'seller_id'     => $listing->seller_id,
+        ]);
+
+        return ApiResponse::success(null, 'Listing restored successfully');
+    }
+
     public function removeReview(string $id)
     {
         $admin  = auth('api')->user();
@@ -186,9 +202,6 @@ class AdminController extends Controller
         return ApiResponse::success(null, 'Review removed');
     }
 
-    // ── Reports ─────────────────────────────────────────────────
-
-    // GET /api/v1/admin/reports
     public function listReports(Request $request)
     {
         $query = Report::with('reporter:user_id,name,email');
@@ -206,7 +219,6 @@ class AdminController extends Controller
         return ApiResponse::success($reports);
     }
 
-    // PATCH /api/v1/admin/reports/{id}/resolve
     public function resolveReport(Request $request, string $id)
     {
         $request->validate([
@@ -228,11 +240,10 @@ class AdminController extends Controller
             'resolved_at' => now(),
         ]);
 
-        // Take action
         switch ($request->action) {
             case 'remove':
-                if ($report->target_type === 'product') {
-                    Product::where('product_id', $report->target_id)
+                if ($report->target_type === 'listing') {
+                    Listing::where('listing_id', $report->target_id)
                         ->update(['status' => 'archived']);
                 }
                 if ($report->target_type === 'review') {
@@ -245,14 +256,13 @@ class AdminController extends Controller
                 if ($report->target_type === 'user') {
                     User::where('user_id', $report->target_id)
                         ->update(['is_blocked' => true]);
-                    Product::where('seller_id', $report->target_id)
+                    Listing::where('seller_id', $report->target_id)
                         ->where('status', 'active')
                         ->update(['status' => 'archived']);
                 }
                 break;
         }
 
-        // Notify reporter of outcome
         Notification::create([
             'notification_id' => Str::uuid(),
             'user_id'         => $report->reporter_id,
@@ -270,9 +280,6 @@ class AdminController extends Controller
         return ApiResponse::success(null, 'Report resolved');
     }
 
-    // ── Categories ───────────────────────────────────────────────
-
-    // POST /api/v1/admin/categories
     public function createCategory(Request $request)
     {
         $request->validate([
@@ -296,7 +303,6 @@ class AdminController extends Controller
         return ApiResponse::created($category, 'Category created');
     }
 
-    // PUT /api/v1/admin/categories/{id}
     public function updateCategory(Request $request, string $id)
     {
         $request->validate([
@@ -324,35 +330,28 @@ class AdminController extends Controller
         return ApiResponse::success($category, 'Category updated');
     }
 
-    // ── Stats ────────────────────────────────────────────────────
-
-    // GET /api/v1/admin/stats
     public function stats()
     {
-        $revenue = \App\Models\Payment::where('status', 'paid')
+        $revenue = Payment::where('status', 'paid')
             ->selectRaw('COALESCE(SUM(amount::numeric), 0) as total')
             ->value('total');
 
         return ApiResponse::success([
-            'total_users'           => \App\Models\User::where('role', '!=', 'admin')->count(),
-            'total_active_listings' => \App\Models\Product::where('status', 'active')->count(),
+            'total_users'           => User::where('role', '!=', 'admin')->count(),
+            'total_active_listings' => Listing::where('status', 'active')->count(),
             'total_revenue'         => round((float) $revenue, 2),
-            'total_orders'          => \App\Models\Order::count(),
-            'pending_reports'       => \App\Models\Report::where('status', 'pending')->count(),
-            'blocked_users'         => \App\Models\User::where('is_blocked', true)->count(),
-            'orders_by_status'      => \App\Models\Order::selectRaw('status, count(*) as count')
+            'pending_reports'       => Report::where('status', 'pending')->count(),
+            'blocked_users'         => User::where('is_blocked', true)->count(),
+            'listings_by_status'    => Listing::selectRaw('status, count(*) as count')
                                         ->groupBy('status')
                                         ->pluck('count', 'status'),
         ]);
     }
 
-    // ── Audit Log ────────────────────────────────────────────────
-
-    // GET /api/v1/admin/audit-log
     public function auditLog(Request $request)
     {
         $query = AuditLog::with('admin:user_id,name,email')
-            ->orderBy('log_id', 'desc'); // order by log_id instead of performed_at
+            ->orderBy('log_id', 'desc');
 
         if ($request->filled('admin_id')) {
             $query->where('admin_id', $request->admin_id);
@@ -367,44 +366,11 @@ class AdminController extends Controller
         return ApiResponse::success($logs);
     }
 
-    // PATCH /api/v1/admin/products/{id}/restore
-    public function restoreProduct(string $id)
-{
-    $admin   = auth('api')->user();
-    $product = Product::where('product_id', $id)->first();
-
-    if (! $product) {
-        return ApiResponse::error('Product not found', 404);
-    }
-
-    if ($product->status !== 'archived') {
-        return ApiResponse::error('Only archived products can be restored', 422);
-    }
-
-    $product->update(['status' => 'active']);
-
-    \App\Models\Notification::create([
-        'notification_id' => \Illuminate\Support\Str::uuid(),
-        'user_id'         => $product->seller_id,
-        'type'            => 'listing_restored',
-        'body'            => "Your listing \"{$product->title}\" has been restored by an administrator.",
-        'status'          => 'unread',
-    ]);
-
-    AuditService::log($admin->user_id, 'restore_product', 'product', $id, [
-        'product_title' => $product->title,
-        'seller_id'     => $product->seller_id,
-    ]);
-
-    return ApiResponse::success(null, 'Product restored successfully');
-}
-
-    // GET /api/v1/admin/payments
     public function listPayments(Request $request)
     {
         $query = Payment::with([
             'seller:user_id,name,email',
-            'product:product_id,title',
+            'listing:listing_id,title',
         ])->orderBy('created_at', 'desc');
 
         if ($request->filled('status')) {
@@ -420,7 +386,6 @@ class AdminController extends Controller
 
         $payments = $query->paginate(30);
 
-        // Summary stats
         $totalPaid   = Payment::where('status', 'paid')->sum('amount');
         $totalFailed = Payment::where('status', 'failed')->count();
         $totalPending= Payment::where('status', 'pending')->count();
@@ -433,64 +398,5 @@ class AdminController extends Controller
                 'pending_count' => $totalPending,
             ],
         ]);
-    }
-
-    // GET /api/v1/admin/subcategories
-    public function listSubcategories(Request $request)
-    {
-        $query = \App\Models\Subcategory::with('category:category_id,category_name');
-        if ($request->filled('category_id')) {
-            $query->where('category_id', $request->category_id);
-        }
-        return ApiResponse::success($query->get());
-    }
-
-    // POST /api/v1/admin/subcategories
-    public function createSubcategory(Request $request)
-    {
-        $request->validate([
-            'category_id'      => ['required', 'integer', 'exists:categories,category_id'],
-            'subcategory_name' => ['required', 'string', 'max:255'],
-            'description'      => ['nullable', 'string'],
-        ]);
-
-        $sub = \App\Models\Subcategory::create([
-            'category_id'      => $request->category_id,
-            'subcategory_name' => $request->subcategory_name,
-            'description'      => $request->description,
-            'is_active'        => true,
-        ]);
-
-        AuditService::log(
-            auth('api')->user()->user_id,
-            'create_subcategory',
-            'subcategory',
-            (string) $sub->subcategory_id
-        );
-
-        return ApiResponse::created($sub, 'Subcategory created');
-    }
-
-    // PUT /api/v1/admin/subcategories/{id}
-    public function updateSubcategory(Request $request, string $id)
-    {
-        $request->validate([
-            'subcategory_name' => ['sometimes', 'string', 'max:255'],
-            'is_active'        => ['sometimes', 'boolean'],
-        ]);
-
-        $sub = \App\Models\Subcategory::where('subcategory_id', $id)->first();
-        if (! $sub) return ApiResponse::error('Subcategory not found', 404);
-
-        $sub->update($request->only(['subcategory_name', 'description', 'is_active']));
-
-        AuditService::log(
-            auth('api')->user()->user_id,
-            'update_subcategory',
-            'subcategory',
-            $id
-        );
-
-        return ApiResponse::success($sub, 'Subcategory updated');
     }
 }

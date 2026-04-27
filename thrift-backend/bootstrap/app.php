@@ -34,7 +34,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'blocked'           => \App\Http\Middleware\CheckBlocked::class,
             'admin.only'        => \App\Http\Middleware\AdminOnly::class,
-            'seller.owns'       => \App\Http\Middleware\SellerOwnsProduct::class,
+            'seller.owns'       => \App\Http\Middleware\SellerOwnsListing::class,
         ]);
 
         $middleware->validateCsrfTokens(except: [
