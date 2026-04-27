@@ -13,7 +13,7 @@ class Payment extends Model
     protected $fillable = [
         'payment_id',
         'seller_id',
-        'product_id',
+        'listing_id',
         'amount',
         'currency',
         'method',
@@ -29,9 +29,9 @@ class Payment extends Model
         'amount'           => 'decimal:2',
     ];
 
-    public function product()
+    public function listing()
     {
-        return $this->belongsTo(Product::class, 'product_id', 'product_id');
+        return $this->belongsTo(Listing::class, 'listing_id', 'listing_id');
     }
 
     public function seller()

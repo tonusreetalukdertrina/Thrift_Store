@@ -2,13 +2,55 @@
   "openapi": "3.1.0",
   "info": {
     "title": "Thrift Store API",
-    "version": "1.0.0",
-    "description": "API for the Thrift Store marketplace. Supports product listings, orders, payments via Stripe, reviews, wishlist, notifications, and admin management."
+    "version": "2.0.0",
+    "description": "C2C marketplace API. Users can list items for sale, express interest in listings, and manage sales. Payment via Stripe (listing fee)."
   },
   "servers": [
     {
       "url": "http://localhost:8000/api",
       "description": "Local development server"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Authentication",
+      "description": "Register, login, logout, and refresh JWT tokens. These endpoints manage user identity."
+    },
+    {
+      "name": "Profile",
+      "description": "View and update your own profile, change password, or delete your account. Requires authentication."
+    },
+    {
+      "name": "Listings",
+      "description": "Create, browse, and manage listings. Any authenticated user can create a listing (draft), pay a listing fee to publish it, and manage its lifecycle. Buyers can browse active listings publicly and express interest."
+    },
+    {
+      "name": "Sellers",
+      "description": "Public seller profiles. View a seller's active listings, average rating, and reviews. No authentication required."
+    },
+    {
+      "name": "Payments",
+      "description": "Stripe-powered listing fee payments. Sellers create draft listings, then pay for them in batches via Stripe checkout. Each listing costs ~$0.42 (50 BDT equivalent)."
+    },
+    {
+      "name": "Webhooks",
+      "description": "Stripe webhook endpoint. Called by Stripe after payment events (completion, expiry). No auth — verified via Stripe signature."
+    },
+    {
+      "name": "Reviews",
+      "description": "Buyers can review a listing after it's marked as sold. Sellers can respond to reviews. One review per listing."
+    },
+    {
+      "name": "Notifications",
+      "description": "In-app notifications. Users receive notifications for interest, sales, admin actions, etc. Read and mark as read."
+    },
+    {
+      "name": "Reports",
+      "description": "Report a listing, review, or user for policy violations. Admins review and resolve reports."
+    },
+    {
+      "name": "Admin",
+      "description": "Admin-only endpoints. Manage users (block/unblock), listings (remove/restore), reviews, reports, categories, payments, and view platform stats and audit logs. Requires admin role."
     }
   ],
   "paths": {
@@ -36,7 +78,7 @@
         },
         "responses": {
           "201": { "description": "Registration successful", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/AuthResponse" } } } },
-          "422": { "description": "Validation failed", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } }
+          "422": { "description": "Validation failed" }
         }
       }
     },
@@ -61,7 +103,7 @@
           }
         },
         "responses": {
-          "200": { "description": "Login successful", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/AuthResponse" } } } },
+          "200": { "description": "Login successful" },
           "401": { "description": "Invalid email or password" },
           "403": { "description": "Account is blocked" }
         }
@@ -83,7 +125,7 @@
         "summary": "Refresh JWT token",
         "security": [{ "bearerAuth": [] }],
         "responses": {
-          "200": { "description": "Token refreshed", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/TokenResponse" } } } },
+          "200": { "description": "Token refreshed" },
           "401": { "description": "Token refresh failed" }
         }
       }
@@ -94,7 +136,7 @@
         "summary": "Get the authenticated user's profile",
         "security": [{ "bearerAuth": [] }],
         "responses": {
-          "200": { "description": "Profile data", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ProfileResponse" } } } }
+          "200": { "description": "Profile data" }
         }
       },
       "post": {
@@ -116,7 +158,7 @@
           }
         },
         "responses": {
-          "200": { "description": "Profile updated", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ProfileResponse" } } } }
+          "200": { "description": "Profile updated" }
         }
       },
       "delete": {
@@ -170,15 +212,14 @@
         }
       }
     },
-    "/v1/products": {
+    "/v1/listings": {
       "get": {
-        "tags": ["Products"],
-        "summary": "List active products with filters and search",
+        "tags": ["Listings"],
+        "summary": "List active listings with filters and search",
         "security": [],
         "parameters": [
           { "name": "q", "in": "query", "schema": { "type": "string" }, "description": "Full-text search query" },
           { "name": "category_id", "in": "query", "schema": { "type": "integer" }, "description": "Filter by category ID" },
-          { "name": "subcategory_id", "in": "query", "schema": { "type": "integer" }, "description": "Filter by subcategory ID or name" },
           { "name": "min_price", "in": "query", "schema": { "type": "number" }, "description": "Minimum price filter" },
           { "name": "max_price", "in": "query", "schema": { "type": "number" }, "description": "Maximum price filter" },
           { "name": "condition", "in": "query", "schema": { "type": "string", "enum": ["New", "Like New", "Good", "Fair"] } },
@@ -186,12 +227,12 @@
           { "name": "sort", "in": "query", "schema": { "type": "string", "enum": ["newest", "price_asc", "price_desc"], "default": "newest" } }
         ],
         "responses": {
-          "200": { "description": "Paginated list of products" }
+          "200": { "description": "Paginated list of active listings" }
         }
       },
       "post": {
-        "tags": ["Products"],
-        "summary": "Create a new product listing (as draft)",
+        "tags": ["Listings"],
+        "summary": "Create a new listing (as draft)",
         "security": [{ "bearerAuth": [] }],
         "requestBody": {
           "required": true,
@@ -202,19 +243,12 @@
                 "required": ["title", "description", "price", "condition", "category_id", "images"],
                 "properties": {
                   "title": { "type": "string", "minLength": 5, "maxLength": 120, "example": "Vintage Leather Jacket" },
-                  "description": { "type": "string", "minLength": 20, "maxLength": 2000, "example": "A beautiful vintage leather jacket in great condition..." },
+                  "description": { "type": "string", "minLength": 20, "maxLength": 2000 },
                   "price": { "type": "number", "minimum": 0.01, "example": 49.99 },
                   "condition": { "type": "string", "enum": ["New", "Like New", "Good", "Fair"] },
                   "category_id": { "type": "integer", "example": 1 },
-                  "subcategory_id": { "type": "integer", "nullable": true },
                   "location": { "type": "string", "maxLength": 255, "example": "New York, NY" },
-                  "images": {
-                    "type": "array",
-                    "items": { "type": "string", "format": "binary" },
-                    "minItems": 3,
-                    "maxItems": 5,
-                    "description": "Upload 3-5 images (JPEG, PNG, WebP, max 5MB each)"
-                  }
+                  "images": { "type": "array", "items": { "type": "string", "format": "binary" }, "minItems": 3, "maxItems": 5 }
                 }
               }
             }
@@ -226,22 +260,22 @@
         }
       }
     },
-    "/v1/products/{id}": {
+    "/v1/listings/{id}": {
       "get": {
-        "tags": ["Products"],
-        "summary": "Get a single product by ID",
+        "tags": ["Listings"],
+        "summary": "Get a single listing by ID",
         "security": [],
         "parameters": [
           { "name": "id", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
         ],
         "responses": {
-          "200": { "description": "Product details" },
-          "404": { "description": "Product not found" }
+          "200": { "description": "Listing details" },
+          "404": { "description": "Listing not found" }
         }
       },
       "put": {
-        "tags": ["Products"],
-        "summary": "Update a product listing (seller only, draft or active)",
+        "tags": ["Listings"],
+        "summary": "Update a listing (seller only, draft or active)",
         "security": [{ "bearerAuth": [] }],
         "parameters": [
           { "name": "id", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
@@ -266,73 +300,73 @@
         },
         "responses": {
           "200": { "description": "Listing updated" },
-          "404": { "description": "Product not found or not owned" },
+          "404": { "description": "Listing not found or not owned" },
           "422": { "description": "Only draft or active listings can be edited" }
         }
       },
       "delete": {
-        "tags": ["Products"],
-        "summary": "Archive a product listing (seller only)",
+        "tags": ["Listings"],
+        "summary": "Archive a listing (seller only)",
         "security": [{ "bearerAuth": [] }],
         "parameters": [
           { "name": "id", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
         ],
         "responses": {
           "200": { "description": "Listing archived successfully" },
-          "404": { "description": "Product not found or not owned" }
+          "404": { "description": "Listing not found or not owned" }
         }
       }
     },
-    "/v1/products/{id}/sold": {
+    "/v1/listings/{id}/status": {
       "patch": {
-        "tags": ["Products"],
-        "summary": "Mark a product as sold (seller only)",
+        "tags": ["Listings"],
+        "summary": "Update listing status (interested/sold/active/archived)",
+        "description": "Transitions: **active→interested** (buyer), **interested→sold** (seller), **interested→active** (buyer withdraws), **active/draft→archived** (seller/admin). Invalid transitions return 422.",
         "security": [{ "bearerAuth": [] }],
         "parameters": [
           { "name": "id", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
         ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["status"],
+                "properties": {
+                  "status": { "type": "string", "enum": ["interested", "sold", "active", "archived"] }
+                }
+              }
+            }
+          }
+        },
         "responses": {
-          "200": { "description": "Listing marked as sold" },
-          "404": { "description": "Product not found or not owned" }
+          "200": { "description": "Status updated" },
+          "422": { "description": "Transition not allowed" },
+          "404": { "description": "Listing not found" }
         }
       }
     },
     "/v1/categories": {
       "get": {
-        "tags": ["Products"],
-        "summary": "List all active categories with subcategories",
+        "tags": ["Listings"],
+        "summary": "List all active categories",
         "security": [],
         "responses": {
           "200": { "description": "List of categories" }
         }
       }
     },
-    "/v1/seller/listings": {
+    "/v1/my-listings": {
       "get": {
-        "tags": ["Products"],
+        "tags": ["Listings"],
         "summary": "Get the authenticated seller's listings",
         "security": [{ "bearerAuth": [] }],
         "parameters": [
-          { "name": "status", "in": "query", "schema": { "type": "string", "enum": ["draft", "active", "sold", "archived"] }, "description": "Filter by status" }
+          { "name": "status", "in": "query", "schema": { "type": "string", "enum": ["draft", "active", "interested", "sold", "archived"] }, "description": "Filter by status" }
         ],
         "responses": {
           "200": { "description": "Seller's listings" }
-        }
-      }
-    },
-    "/v1/seller/products/{id}/activate": {
-      "patch": {
-        "tags": ["Products"],
-        "summary": "Force activate a draft product if payment is paid",
-        "security": [{ "bearerAuth": [] }],
-        "parameters": [
-          { "name": "id", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
-        ],
-        "responses": {
-          "200": { "description": "Product activated successfully" },
-          "402": { "description": "Payment required" },
-          "404": { "description": "Product not found" },
-          "422": { "description": "Product is already active / sold / archived / payment pending" }
         }
       }
     },
@@ -363,132 +397,6 @@
         }
       }
     },
-    "/v1/orders": {
-      "post": {
-        "tags": ["Orders"],
-        "summary": "Express interest in a product (buyer)",
-        "security": [{ "bearerAuth": [] }],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": ["product_id"],
-                "properties": {
-                  "product_id": { "type": "string", "format": "uuid", "example": "550e8400-e29b-41d4-a716-446655440000" },
-                  "buyer_note": { "type": "string", "maxLength": 500, "nullable": true }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": { "description": "Interest expressed successfully", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/OrderResponse" } } } },
-          "422": { "description": "Listing unavailable / own listing / duplicate interest" }
-        }
-      },
-      "get": {
-        "tags": ["Orders"],
-        "summary": "Get the buyer's orders (interests)",
-        "security": [{ "bearerAuth": [] }],
-        "responses": {
-          "200": { "description": "Paginated list of buyer's orders" }
-        }
-      }
-    },
-    "/v1/orders/{id}": {
-      "get": {
-        "tags": ["Orders"],
-        "summary": "Get order details (buyer, seller, or admin)",
-        "security": [{ "bearerAuth": [] }],
-        "parameters": [
-          { "name": "id", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
-        ],
-        "responses": {
-          "200": { "description": "Order details with relations" },
-          "403": { "description": "Forbidden" },
-          "404": { "description": "Order not found" }
-        }
-      }
-    },
-    "/v1/orders/{id}/confirm": {
-      "patch": {
-        "tags": ["Orders"],
-        "summary": "Confirm an order (seller marks deal confirmed)",
-        "security": [{ "bearerAuth": [] }],
-        "parameters": [
-          { "name": "id", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
-        ],
-        "responses": {
-          "200": { "description": "Deal confirmed, product marked as sold" },
-          "403": { "description": "Not the seller" },
-          "404": { "description": "Order not found or already processed" }
-        }
-      }
-    },
-    "/v1/orders/{id}/cancel": {
-      "patch": {
-        "tags": ["Orders"],
-        "summary": "Cancel an order (buyer only)",
-        "security": [{ "bearerAuth": [] }],
-        "parameters": [
-          { "name": "id", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "cancel_reason": { "type": "string" }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": { "description": "Interest cancelled successfully" },
-          "404": { "description": "Order not found" },
-          "422": { "description": "This order cannot be cancelled" }
-        }
-      }
-    },
-    "/v1/orders/{id}/complete": {
-      "patch": {
-        "tags": ["Orders"],
-        "summary": "Mark an order as completed (seller only)",
-        "security": [{ "bearerAuth": [] }],
-        "parameters": [
-          { "name": "id", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
-        ],
-        "responses": {
-          "200": { "description": "Order marked as completed" },
-          "403": { "description": "Not the seller" },
-          "404": { "description": "Order not found or not confirmed" }
-        }
-      }
-    },
-    "/v1/seller/orders": {
-      "get": {
-        "tags": ["Orders"],
-        "summary": "Get orders for the authenticated seller's products",
-        "security": [{ "bearerAuth": [] }],
-        "responses": {
-          "200": { "description": "Paginated list of seller's orders" }
-        }
-      }
-    },
-    "/v1/seller/stats": {
-      "get": {
-        "tags": ["Orders"],
-        "summary": "Get seller statistics (completed orders, revenue, fees)",
-        "security": [{ "bearerAuth": [] }],
-        "responses": {
-          "200": { "description": "Seller stats" }
-        }
-      }
-    },
     "/v1/payments": {
       "get": {
         "tags": ["Payments"],
@@ -505,7 +413,7 @@
         "summary": "Get the seller's outstanding listing fees",
         "security": [{ "bearerAuth": [] }],
         "responses": {
-          "200": { "description": "Due payment info with draft products" }
+          "200": { "description": "Due payment info with draft listings" }
         }
       }
     },
@@ -520,13 +428,12 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": ["product_ids"],
+                "required": ["listing_ids"],
                 "properties": {
-                  "product_ids": {
+                  "listing_ids": {
                     "type": "array",
                     "items": { "type": "string", "format": "uuid" },
-                    "minItems": 1,
-                    "example": ["550e8400-e29b-41d4-a716-446655440000"]
+                    "minItems": 1
                   }
                 }
               }
@@ -535,7 +442,7 @@
         },
         "responses": {
           "200": { "description": "Checkout URL created" },
-          "422": { "description": "Some products are already active / have paid payment" },
+          "422": { "description": "Some listings are already active / have paid payment" },
           "502": { "description": "Stripe error" }
         }
       }
@@ -562,50 +469,18 @@
         "responses": {
           "200": { "description": "Listings activated" },
           "402": { "description": "Payment not completed yet" },
-          "403": { "description": "Unauthorized" },
-          "502": { "description": "Could not verify payment" }
-        }
-      }
-    },
-    "/v1/payments/activate-drafts": {
-      "post": {
-        "tags": ["Payments"],
-        "summary": "Manually activate draft products after payment",
-        "security": [{ "bearerAuth": [] }],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": ["product_ids"],
-                "properties": {
-                  "product_ids": { "type": "array", "items": { "type": "string", "format": "uuid" } },
-                  "session_id": { "type": "string", "nullable": true }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": { "description": "Products activated" }
+          "403": { "description": "Unauthorized" }
         }
       }
     },
     "/v1/webhook/stripe": {
       "post": {
         "tags": ["Webhooks"],
-        "summary": "Stripe webhook handler (no auth, no CSRF)",
+        "summary": "Stripe webhook handler",
         "security": [],
         "requestBody": {
           "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          }
+          "content": { "application/json": { "schema": { "type": "object" } } }
         },
         "responses": {
           "200": { "description": "Webhook received" }
@@ -615,7 +490,7 @@
     "/v1/reviews": {
       "post": {
         "tags": ["Reviews"],
-        "summary": "Submit a review for a completed order (buyer)",
+        "summary": "Submit a review for a sold listing (buyer)",
         "security": [{ "bearerAuth": [] }],
         "requestBody": {
           "required": true,
@@ -623,9 +498,9 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": ["order_id", "rating"],
+                "required": ["listing_id", "rating"],
                 "properties": {
-                  "order_id": { "type": "string", "format": "uuid" },
+                  "listing_id": { "type": "string", "format": "uuid" },
                   "rating": { "type": "integer", "minimum": 1, "maximum": 5 },
                   "comment": { "type": "string", "maxLength": 2000, "nullable": true }
                 }
@@ -635,8 +510,8 @@
         },
         "responses": {
           "201": { "description": "Review submitted successfully" },
-          "403": { "description": "Order not completed" },
-          "422": { "description": "Already reviewed this order" }
+          "403": { "description": "Listing not sold or not your purchase" },
+          "422": { "description": "Already reviewed this listing" }
         }
       }
     },
@@ -656,7 +531,7 @@
                 "type": "object",
                 "required": ["response"],
                 "properties": {
-                  "response": { "type": "string", "maxLength": 1000, "example": "Thank you for your purchase!" }
+                  "response": { "type": "string", "maxLength": 1000 }
                 }
               }
             }
@@ -666,53 +541,6 @@
           "200": { "description": "Response added" },
           "404": { "description": "Review not found" },
           "422": { "description": "Already responded" }
-        }
-      }
-    },
-    "/v1/wishlist": {
-      "get": {
-        "tags": ["Wishlist"],
-        "summary": "Get the authenticated user's wishlist",
-        "security": [{ "bearerAuth": [] }],
-        "responses": {
-          "200": { "description": "Wishlist items" }
-        }
-      },
-      "post": {
-        "tags": ["Wishlist"],
-        "summary": "Add a product to the wishlist",
-        "security": [{ "bearerAuth": [] }],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": ["product_id"],
-                "properties": {
-                  "product_id": { "type": "string", "format": "uuid" }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": { "description": "Added to wishlist" },
-          "422": { "description": "Already in wishlist" }
-        }
-      }
-    },
-    "/v1/wishlist/{product_id}": {
-      "delete": {
-        "tags": ["Wishlist"],
-        "summary": "Remove a product from the wishlist",
-        "security": [{ "bearerAuth": [] }],
-        "parameters": [
-          { "name": "product_id", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
-        ],
-        "responses": {
-          "200": { "description": "Removed from wishlist" },
-          "404": { "description": "Item not found in wishlist" }
         }
       }
     },
@@ -752,7 +580,7 @@
     "/v1/reports": {
       "post": {
         "tags": ["Reports"],
-        "summary": "Report a product, review, or user",
+        "summary": "Report a listing, review, or user",
         "security": [{ "bearerAuth": [] }],
         "requestBody": {
           "required": true,
@@ -762,7 +590,7 @@
                 "type": "object",
                 "required": ["target_type", "target_id", "reason"],
                 "properties": {
-                  "target_type": { "type": "string", "enum": ["product", "review", "user"] },
+                  "target_type": { "type": "string", "enum": ["listing", "review", "user"] },
                   "target_id": { "type": "string", "format": "uuid" },
                   "reason": { "type": "string", "minLength": 10, "maxLength": 1000 }
                 }
@@ -844,132 +672,46 @@
         }
       }
     },
-    "/v1/admin/products": {
+    "/v1/admin/listings": {
       "get": {
         "tags": ["Admin"],
-        "summary": "List all products (admin view)",
+        "summary": "List all listings with filters",
         "security": [{ "bearerAuth": [] }],
         "parameters": [
           { "name": "status", "in": "query", "schema": { "type": "string" } },
           { "name": "q", "in": "query", "schema": { "type": "string" }, "description": "Search by title" }
         ],
         "responses": {
-          "200": { "description": "Paginated product list" }
-        }
-      },
-      "post": {
-        "tags": ["Admin"],
-        "summary": "Create a product listing (admin/seller)",
-        "security": [{ "bearerAuth": [] }],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "multipart/form-data": {
-              "schema": {
-                "type": "object",
-                "required": ["title", "description", "price", "condition", "category_id", "images"],
-                "properties": {
-                  "title": { "type": "string", "minLength": 5, "maxLength": 120 },
-                  "description": { "type": "string", "minLength": 20, "maxLength": 2000 },
-                  "price": { "type": "number", "minimum": 0.01 },
-                  "condition": { "type": "string", "enum": ["New", "Like New", "Good", "Fair"] },
-                  "category_id": { "type": "integer" },
-                  "subcategory_id": { "type": "integer", "nullable": true },
-                  "location": { "type": "string", "maxLength": 255 },
-                  "images": { "type": "array", "items": { "type": "string", "format": "binary" }, "minItems": 3, "maxItems": 5 }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": { "description": "Listing created as draft" }
+          "200": { "description": "Paginated listing list" }
         }
       }
     },
-    "/v1/admin/products/{id}": {
-      "put": {
-        "tags": ["Admin"],
-        "summary": "Update a product listing (admin/seller, seller.owns)",
-        "security": [{ "bearerAuth": [] }],
-        "parameters": [
-          { "name": "id", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "title": { "type": "string", "minLength": 5, "maxLength": 120 },
-                  "description": { "type": "string", "minLength": 20, "maxLength": 2000 },
-                  "price": { "type": "number", "minimum": 0.01 },
-                  "condition": { "type": "string", "enum": ["New", "Like New", "Good", "Fair"] },
-                  "category_id": { "type": "integer" },
-                  "location": { "type": "string", "maxLength": 255 }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": { "description": "Listing updated" },
-          "404": { "description": "Product not found or not owned" }
-        }
-      },
+    "/v1/admin/listings/{id}": {
       "delete": {
         "tags": ["Admin"],
-        "summary": "Remove (archive) a product",
+        "summary": "Remove (archive) a listing",
         "security": [{ "bearerAuth": [] }],
         "parameters": [
           { "name": "id", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
         ],
         "responses": {
           "200": { "description": "Listing removed and seller notified" },
-          "404": { "description": "Product not found" }
+          "404": { "description": "Listing not found" }
         }
       }
     },
-    "/v1/admin/products/{id}/sold": {
+    "/v1/admin/listings/{id}/restore": {
       "patch": {
         "tags": ["Admin"],
-        "summary": "Mark a product as sold (admin/seller)",
+        "summary": "Restore an archived listing",
         "security": [{ "bearerAuth": [] }],
         "parameters": [
           { "name": "id", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
         ],
         "responses": {
-          "200": { "description": "Listing marked as sold" },
-          "404": { "description": "Product not found or not owned" }
-        }
-      }
-    },
-    "/v1/admin/products/{id}/restore": {
-      "patch": {
-        "tags": ["Admin"],
-        "summary": "Restore an archived product",
-        "security": [{ "bearerAuth": [] }],
-        "parameters": [
-          { "name": "id", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
-        ],
-        "responses": {
-          "200": { "description": "Product restored successfully" },
-          "404": { "description": "Product not found" },
-          "422": { "description": "Only archived products can be restored" }
-        }
-      }
-    },
-    "/v1/admin/products/{id}/interest-status": {
-      "get": {
-        "tags": ["Admin"],
-        "summary": "Check if the current user has expressed interest in a product",
-        "security": [{ "bearerAuth": [] }],
-        "parameters": [
-          { "name": "id", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
-        ],
-        "responses": {
-          "200": { "description": "Interest status" }
+          "200": { "description": "Listing restored successfully" },
+          "404": { "description": "Listing not found" },
+          "422": { "description": "Only archived listings can be restored" }
         }
       }
     },
@@ -994,7 +736,7 @@
         "security": [{ "bearerAuth": [] }],
         "parameters": [
           { "name": "status", "in": "query", "schema": { "type": "string", "enum": ["pending", "resolved"] } },
-          { "name": "target_type", "in": "query", "schema": { "type": "string", "enum": ["product", "review", "user"] } }
+          { "name": "target_type", "in": "query", "schema": { "type": "string", "enum": ["listing", "review", "user"] } }
         ],
         "responses": {
           "200": { "description": "Paginated reports" }
@@ -1027,6 +769,20 @@
         "responses": {
           "200": { "description": "Report resolved" },
           "404": { "description": "Report not found" }
+        }
+      }
+    },
+    "/v1/admin/payments": {
+      "get": {
+        "tags": ["Admin"],
+        "summary": "List all payments with summary stats",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "status", "in": "query", "schema": { "type": "string", "enum": ["pending", "paid", "failed"] } },
+          { "name": "q", "in": "query", "schema": { "type": "string" }, "description": "Search by seller name or email" }
+        ],
+        "responses": {
+          "200": { "description": "Payments with summary" }
         }
       }
     },
@@ -1083,98 +839,6 @@
           "404": { "description": "Category not found" }
         }
       }
-    },
-    "/v1/admin/subcategories": {
-      "get": {
-        "tags": ["Admin"],
-        "summary": "List subcategories",
-        "security": [{ "bearerAuth": [] }],
-        "parameters": [
-          { "name": "category_id", "in": "query", "schema": { "type": "integer" } }
-        ],
-        "responses": {
-          "200": { "description": "Subcategories" }
-        }
-      },
-      "post": {
-        "tags": ["Admin"],
-        "summary": "Create a new subcategory",
-        "security": [{ "bearerAuth": [] }],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": ["category_id", "subcategory_name"],
-                "properties": {
-                  "category_id": { "type": "integer" },
-                  "subcategory_name": { "type": "string", "maxLength": 255 },
-                  "description": { "type": "string", "nullable": true }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": { "description": "Subcategory created" }
-        }
-      }
-    },
-    "/v1/admin/subcategories/{id}": {
-      "put": {
-        "tags": ["Admin"],
-        "summary": "Update a subcategory",
-        "security": [{ "bearerAuth": [] }],
-        "parameters": [
-          { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "subcategory_name": { "type": "string", "maxLength": 255 },
-                  "is_active": { "type": "boolean" }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": { "description": "Subcategory updated" },
-          "404": { "description": "Subcategory not found" }
-        }
-      }
-    },
-    "/v1/admin/payments/checkout/{product_id}": {
-      "get": {
-        "tags": ["Admin"],
-        "summary": "Create a Stripe checkout session for a single product (admin/seller)",
-        "security": [{ "bearerAuth": [] }],
-        "parameters": [
-          { "name": "product_id", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
-        ],
-        "responses": {
-          "200": { "description": "Checkout URL created" }
-        }
-      }
-    },
-    "/v1/admin/payments": {
-      "get": {
-        "tags": ["Admin"],
-        "summary": "List all payments with summary stats",
-        "security": [{ "bearerAuth": [] }],
-        "parameters": [
-          { "name": "status", "in": "query", "schema": { "type": "string", "enum": ["pending", "paid", "failed"] } },
-          { "name": "q", "in": "query", "schema": { "type": "string" }, "description": "Search by seller name or email" }
-        ],
-        "responses": {
-          "200": { "description": "Payments with summary" }
-        }
-      }
     }
   },
   "components": {
@@ -1207,80 +871,7 @@
               "token": { "type": "string" }
             }
           },
-          "meta": {
-            "type": "object",
-            "properties": {
-              "message": { "type": "string" }
-            }
-          },
-          "errors": { "type": "array", "items": {} }
-        }
-      },
-      "TokenResponse": {
-        "type": "object",
-        "properties": {
-          "data": {
-            "type": "object",
-            "properties": {
-              "token": { "type": "string" }
-            }
-          },
-          "meta": {
-            "type": "object",
-            "properties": {
-              "message": { "type": "string" }
-            }
-          },
-          "errors": { "type": "array", "items": {} }
-        }
-      },
-      "ProfileResponse": {
-        "type": "object",
-        "properties": {
-          "data": {
-            "type": "object",
-            "properties": {
-              "user_id": { "type": "string", "format": "uuid" },
-              "name": { "type": "string" },
-              "email": { "type": "string", "format": "email" },
-              "phone": { "type": "string" },
-              "role": { "type": "string" },
-              "profile_photo_url": { "type": "string", "nullable": true },
-              "is_blocked": { "type": "boolean" },
-              "created_at": { "type": "string", "format": "date-time" }
-            }
-          },
-          "meta": {
-            "type": "object",
-            "properties": {
-              "message": { "type": "string" }
-            }
-          },
-          "errors": { "type": "array", "items": {} }
-        }
-      },
-      "OrderResponse": {
-        "type": "object",
-        "properties": {
-          "data": {
-            "type": "object",
-            "properties": {
-              "order": { "type": "object" },
-              "seller_contact": {
-                "type": "object",
-                "properties": {
-                  "name": { "type": "string" },
-                  "phone": { "type": "string" }
-                }
-              }
-            }
-          },
-          "meta": {
-            "type": "object",
-            "properties": {
-              "message": { "type": "string" }
-            }
-          },
+          "meta": { "type": "object", "properties": { "message": { "type": "string" } } },
           "errors": { "type": "array", "items": {} }
         }
       },
@@ -1288,19 +879,8 @@
         "type": "object",
         "properties": {
           "data": { "nullable": true },
-          "meta": {
-            "type": "object",
-            "properties": {
-              "message": { "type": "string" }
-            }
-          },
-          "errors": {
-            "type": "object",
-            "additionalProperties": {
-              "type": "array",
-              "items": { "type": "string" }
-            }
-          }
+          "meta": { "type": "object", "properties": { "message": { "type": "string" } } },
+          "errors": { "type": "object", "additionalProperties": { "type": "array", "items": { "type": "string" } } }
         }
       }
     }

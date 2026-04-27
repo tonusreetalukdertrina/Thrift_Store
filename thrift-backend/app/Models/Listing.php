@@ -4,17 +4,18 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Product extends Model
+class Listing extends Model
 {
-    protected $primaryKey = 'product_id';
+    protected $table = 'listings';
+    protected $primaryKey = 'listing_id';
     public $incrementing = false;
     protected $keyType = 'string';
 
     protected $fillable = [
-        'product_id',
+        'listing_id',
         'seller_id',
+        'interested_buyer_id',
         'category_id',
-        'subcategory_id',
         'title',
         'description',
         'price',
@@ -31,14 +32,14 @@ class Product extends Model
         'expires_at' => 'datetime',
     ];
 
-    public function subcategory()
-    {
-        return $this->belongsTo(Subcategory::class, 'subcategory_id', 'subcategory_id');
-    }
-
     public function seller()
     {
         return $this->belongsTo(User::class, 'seller_id', 'user_id');
+    }
+
+    public function interestedBuyer()
+    {
+        return $this->belongsTo(User::class, 'interested_buyer_id', 'user_id');
     }
 
     public function category()
@@ -48,13 +49,11 @@ class Product extends Model
 
     public function reviews()
     {
-        return $this->hasManyThrough(
-            Review::class,
-            Order::class,
-            'product_id',
-            'order_id',
-            'product_id',
-            'order_id'
-        );
+        return $this->hasMany(Review::class, 'listing_id', 'listing_id');
+    }
+
+    public function payments()
+    {
+        return $this->hasMany(Payment::class, 'listing_id', 'listing_id');
     }
 }

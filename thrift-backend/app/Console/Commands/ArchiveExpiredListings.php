@@ -2,8 +2,8 @@
 
 namespace App\Console\Commands;
 
+use App\Models\Listing;
 use App\Models\Notification;
-use App\Models\Product;
 use Illuminate\Console\Command;
 use Illuminate\Support\Str;
 
@@ -14,34 +14,32 @@ class ArchiveExpiredListings extends Command
 
     public function handle()
     {
-        // Notify sellers 5 days before expiry (day 55)
-        $soonExpiring = Product::where('status', 'active')
+        $soonExpiring = Listing::where('status', 'active')
             ->whereDate('expires_at', now()->addDays(5)->toDateString())
             ->get();
 
-        foreach ($soonExpiring as $product) {
+        foreach ($soonExpiring as $listing) {
             Notification::create([
                 'notification_id' => Str::uuid(),
-                'user_id'         => $product->seller_id,
+                'user_id'         => $listing->seller_id,
                 'type'            => 'listing_expiring_soon',
-                'body'            => "Your listing \"{$product->title}\" will expire in 5 days.",
+                'body'            => "Your listing \"{$listing->title}\" will expire in 5 days.",
                 'status'          => 'unread',
             ]);
         }
 
-        // Archive expired listings
-        $expired = Product::where('status', 'active')
+        $expired = Listing::where('status', 'active')
             ->where('expires_at', '<=', now())
             ->get();
 
-        foreach ($expired as $product) {
-            $product->update(['status' => 'archived']);
+        foreach ($expired as $listing) {
+            $listing->update(['status' => 'archived']);
 
             Notification::create([
                 'notification_id' => Str::uuid(),
-                'user_id'         => $product->seller_id,
+                'user_id'         => $listing->seller_id,
                 'type'            => 'listing_archived',
-                'body'            => "Your listing \"{$product->title}\" has been archived after 60 days.",
+                'body'            => "Your listing \"{$listing->title}\" has been archived after 60 days.",
                 'status'          => 'unread',
             ]);
         }

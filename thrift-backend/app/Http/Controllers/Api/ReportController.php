@@ -14,7 +14,7 @@ class ReportController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'target_type' => ['required', 'in:product,review,user'],
+            'target_type' => ['required', 'in:listing,review,user'],
             'target_id'   => ['required', 'uuid'],
             'reason'      => ['required', 'string', 'min:10', 'max:1000'],
         ]);

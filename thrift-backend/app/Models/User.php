@@ -47,4 +47,14 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->password_hash;
     }
+
+    public function listings()
+    {
+        return $this->hasMany(Listing::class, 'seller_id', 'user_id');
+    }
+
+    public function interestedListings()
+    {
+        return $this->hasMany(Listing::class, 'interested_buyer_id', 'user_id');
+    }
 }

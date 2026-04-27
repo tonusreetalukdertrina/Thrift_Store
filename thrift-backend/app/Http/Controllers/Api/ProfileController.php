@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Helpers\ApiResponse;
-use App\Models\Product;
+use App\Models\Listing;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
@@ -104,7 +104,7 @@ public function changePassword(Request $request)
     }
 
     // Archive all listings
-    Product::where('seller_id', $user->user_id)
+    Listing::where('seller_id', $user->user_id)
         ->whereIn('status', ['active', 'draft'])
         ->update(['status' => 'archived']);
 
