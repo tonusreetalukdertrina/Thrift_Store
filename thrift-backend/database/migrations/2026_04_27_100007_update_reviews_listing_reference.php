@@ -9,7 +9,6 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('reviews', function (Blueprint $table) {
-            $table->dropForeign(['order_id']);
             $table->dropColumn('order_id');
             $table->uuid('listing_id')->after('review_id');
             $table->foreign('listing_id')->references('listing_id')->on('listings')->cascadeOnDelete();
