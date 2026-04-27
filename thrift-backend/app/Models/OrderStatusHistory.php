@@ -1,0 +1,25 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class OrderStatusHistory extends Model
+{
+    protected $table      = 'order_status_history';
+    public $timestamps    = false;
+    protected $primaryKey = 'history_id';
+
+    protected $fillable = [
+        'order_id',
+        'changed_by',
+        'old_status',
+        'new_status',
+        'note',
+        'changed_at',
+    ];
+
+    protected $casts = [
+        'changed_at' => 'datetime',
+    ];
+}
