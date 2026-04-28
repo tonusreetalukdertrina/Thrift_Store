@@ -4,61 +4,28 @@ namespace Database\Seeders;
 
 use App\Models\Listing;
 use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 
-class DatabaseSeeder extends Seeder
+class ListingSeeder extends Seeder
 {
-    use WithoutModelEvents;
-
     public function run(): void
     {
-        $this->call([
-            CategorySeeder::class,
-        ]);
+        $seller = User::where('role', 'user')->first();
 
-        $password = bcrypt('Password1!');
+        if (! $seller) {
+            $seller = User::create([
+                'user_id'       => Str::uuid(),
+                'name'          => 'Demo Seller',
+                'email'         => 'seller@demo.com',
+                'phone'         => '+8801711111111',
+                'password_hash' => bcrypt('DemoPass1!'),
+                'role'          => 'user',
+                'is_blocked'    => false,
+            ]);
+        }
 
-        $admin = User::create([
-            'user_id'       => Str::uuid(),
-            'name'          => 'Platform Admin',
-            'email'         => 'admin@gmail.com',
-            'phone'         => '+8801700000000',
-            'password_hash' => $password,
-            'role'          => 'admin',
-            'is_blocked'    => false,
-        ]);
-
-        $seller = User::create([
-            'user_id'       => Str::uuid(),
-            'name'          => 'Demo Seller',
-            'email'         => 'seller@gmail.com',
-            'phone'         => '+8801711111111',
-            'password_hash' => $password,
-            'role'          => 'user',
-            'is_blocked'    => false,
-        ]);
-
-        $buyer = User::create([
-            'user_id'       => Str::uuid(),
-            'name'          => 'Demo Buyer',
-            'email'         => 'buyer@gmail.com',
-            'phone'         => '+8801722222222',
-            'password_hash' => $password,
-            'role'          => 'user',
-            'is_blocked'    => false,
-        ]);
-
-        $images = [
-            '/storage/listings/BdIofIQL26lxGJQOxJDcmiB9vHbFWdnT7BXDGx8S.jpg',
-            '/storage/listings/bq2D2vk3r12CvrWZuVreghhj7KPLNJPLCngmtfaS.jpg',
-            '/storage/listings/iuA5kkMp9sBkWUT4QH9jaE8kxDVVBjFYM3VGqJBw.jpg',
-            '/storage/listings/jAc2xWN4WvtbPSIC8xEieKiZIzv3lg3YjGujbPTL.jpg',
-            '/storage/listings/YNchil8tBWzPySCkVgkYyQ8zWmy78cPHmfvV2YFk.jpg',
-        ];
-
-        $draftListings = [
+        $listings = [
             [
                 'title' => 'Vintage Leather Jacket',
                 'description' => 'Genuine brown leather jacket in excellent condition. Size M, perfect for autumn. Only worn a handful of times. No tears or stains.',
@@ -75,9 +42,6 @@ class DatabaseSeeder extends Seeder
                 'category_id' => 2,
                 'location' => 'Dhaka, Banani',
             ],
-        ];
-
-        $activeListings = [
             [
                 'title' => 'Handmade Ceramic Mug Set (4 pcs)',
                 'description' => 'Set of 4 handmade ceramic mugs with unique glazed patterns. Microwave and dishwasher safe. Each mug holds 300ml.',
@@ -128,39 +92,22 @@ class DatabaseSeeder extends Seeder
             ],
         ];
 
-        foreach ($draftListings as $data) {
+        foreach ($listings as $data) {
             Listing::create([
-                'listing_id'  => Str::uuid(),
-                'seller_id'   => $seller->user_id,
-                'category_id' => $data['category_id'],
-                'title'       => $data['title'],
-                'description' => $data['description'],
-                'price'       => $data['price'],
-                'condition'   => $data['condition'],
-                'images'      => $images,
-                'status'      => 'draft',
-                'location'    => $data['location'],
-                'expires_at'  => now()->addDays(30),
+                'listing_id'   => Str::uuid(),
+                'seller_id'    => $seller->user_id,
+                'category_id'  => $data['category_id'],
+                'title'        => $data['title'],
+                'description'  => $data['description'],
+                'price'        => $data['price'],
+                'condition'    => $data['condition'],
+                'images'       => [],
+                'status'       => 'active',
+                'location'     => $data['location'],
+                'expires_at'   => now()->addDays(30),
             ]);
         }
 
-        foreach ($activeListings as $data) {
-            Listing::create([
-                'listing_id'  => Str::uuid(),
-                'seller_id'   => $seller->user_id,
-                'category_id' => $data['category_id'],
-                'title'       => $data['title'],
-                'description' => $data['description'],
-                'price'       => $data['price'],
-                'condition'   => $data['condition'],
-                'images'      => $images,
-                'status'      => 'active',
-                'location'    => $data['location'],
-                'expires_at'  => now()->addDays(30),
-            ]);
-        }
-
-        $this->command->info('Seeded: admin@gmail.com, seller@gmail.com, buyer@gmail.com (password: Password1!)');
-        $this->command->info('Created ' . (count($draftListings) + count($activeListings)) . ' listings');
+        $this->command->info('Created ' . count($listings) . ' sample listings');
     }
 }

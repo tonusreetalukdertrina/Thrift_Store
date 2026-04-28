@@ -227,7 +227,7 @@
           { "name": "sort", "in": "query", "schema": { "type": "string", "enum": ["newest", "price_asc", "price_desc"], "default": "newest" } }
         ],
         "responses": {
-          "200": { "description": "Paginated list of active listings" }
+          "200": { "description": "Paginated list of active listings", "content": { "application/json": { "schema": { "type": "object", "properties": { "data": { "type": "array", "items": { "$ref": "#/components/schemas/Listing" } } } } } } }
         }
       },
       "post": {
@@ -264,12 +264,13 @@
       "get": {
         "tags": ["Listings"],
         "summary": "Get a single listing by ID",
+        "description": "Returns listing with seller and category. If authenticated as the owner or admin, also includes `interested_buyer` details.",
         "security": [],
         "parameters": [
           { "name": "id", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
         ],
         "responses": {
-          "200": { "description": "Listing details" },
+          "200": { "description": "Listing details", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Listing" } } } },
           "404": { "description": "Listing not found" }
         }
       },
@@ -299,7 +300,7 @@
           }
         },
         "responses": {
-          "200": { "description": "Listing updated" },
+          "200": { "description": "Listing updated", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Listing" } } } },
           "404": { "description": "Listing not found or not owned" },
           "422": { "description": "Only draft or active listings can be edited" }
         }
@@ -881,6 +882,34 @@
           "data": { "nullable": true },
           "meta": { "type": "object", "properties": { "message": { "type": "string" } } },
           "errors": { "type": "object", "additionalProperties": { "type": "array", "items": { "type": "string" } } }
+        }
+      },
+      "Listing": {
+        "type": "object",
+        "properties": {
+          "listing_id": { "type": "string", "format": "uuid", "description": "Primary key (renamed from product_id)" },
+          "seller_id": { "type": "string", "format": "uuid" },
+          "category_id": { "type": "integer" },
+          "title": { "type": "string" },
+          "description": { "type": "string" },
+          "price": { "type": "number", "format": "float" },
+          "condition": { "type": "string", "enum": ["New", "Like New", "Good", "Fair"] },
+          "images": { "type": "array", "items": { "type": "string" } },
+          "status": { "type": "string", "enum": ["draft", "active", "interested", "sold", "archived"] },
+          "location": { "type": "string", "nullable": true },
+          "interested_buyer_id": { "type": "string", "format": "uuid", "nullable": true, "description": "Set when a buyer marks interest. Null until then." },
+          "expires_at": { "type": "string", "format": "date-time", "nullable": true },
+          "created_at": { "type": "string", "format": "date-time" },
+          "updated_at": { "type": "string", "format": "date-time" },
+          "seller": {
+            "type": "object",
+            "properties": {
+              "name": { "type": "string" },
+              "profile_photo_url": { "type": "string", "nullable": true },
+              "avg_rating": { "type": "number", "format": "float", "nullable": true }
+            }
+          },
+          "category_name": { "type": "string" }
         }
       }
     }
