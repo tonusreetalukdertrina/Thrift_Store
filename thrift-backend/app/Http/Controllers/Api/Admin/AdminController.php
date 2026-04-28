@@ -12,6 +12,7 @@ use App\Models\Report;
 use App\Models\Review;
 use App\Models\User;
 use App\Services\AuditService;
+use App\Services\CloudinaryService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -129,6 +130,9 @@ class AdminController extends Controller
         if (! $listing) {
             return ApiResponse::error('Listing not found', 404);
         }
+
+        $cloudinary = new CloudinaryService('listings');
+        $cloudinary->deleteImages($listing->images ?? []);
 
         $listing->update(['status' => 'archived']);
 

@@ -7,7 +7,10 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Skeleton } from '@/components/ui/skeleton'
+import { Card, CardContent } from '@/components/ui/card'
+import { AlertTriangle, Shield, Flag, Clock } from 'lucide-react'
 import { toast } from 'sonner'
+import DashboardLayout from '@/components/layout/DashboardLayout'
 
 export default function AdminReportsPage() {
   const [reports, setReports] = useState<Report[]>([])
@@ -40,54 +43,85 @@ export default function AdminReportsPage() {
   }
 
   return (
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
-      <h1 className="text-2xl font-bold mb-6">Reports</h1>
-      {loading ? (
-        <Skeleton className="h-8 w-full" />
-      ) : (
-        <>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Target</TableHead>
-                <TableHead>Type</TableHead>
-                <TableHead>Reason</TableHead>
-                <TableHead>Reporter</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {reports.map((r) => (
-                <TableRow key={r.report_id}>
-                  <TableCell className="font-mono text-xs">{r.target_id.slice(0, 8)}…</TableCell>
-                  <TableCell><Badge variant="outline">{r.target_type}</Badge></TableCell>
-                  <TableCell className="max-w-xs truncate">{r.reason}</TableCell>
-                  <TableCell>{r.reporter?.name || 'Unknown'}</TableCell>
-                  <TableCell>
-                    <Badge variant={r.status === 'pending' ? 'outline' : 'secondary'}>{r.status}</Badge>
-                  </TableCell>
-                  <TableCell className="space-x-1">
-                    {r.status === 'pending' && (
-                      <>
-                        <Button variant="outline" size="sm" onClick={() => resolve(r.report_id, 'dismiss')}>Dismiss</Button>
-                        <Button variant="outline" size="sm" onClick={() => resolve(r.report_id, 'warn')}>Warn</Button>
-                        <Button variant="destructive" size="sm" onClick={() => resolve(r.report_id, 'remove')}>Remove</Button>
-                      </>
-                    )}
-                  </TableCell>
+    <DashboardLayout role="admin">
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-2xl font-bold">Reports</h1>
+          <p className="text-sm text-muted-foreground">Review and resolve user reports</p>
+        </div>
+        {loading ? (
+          <Skeleton className="h-8 w-full" />
+        ) : reports.length === 0 ? (
+          <Card>
+            <CardContent className="py-16 text-center">
+              <div className="w-16 h-16 rounded-2xl bg-accent text-accent-foreground flex items-center justify-center mx-auto mb-4">
+                <AlertTriangle className="w-8 h-8" />
+              </div>
+              <h3 className="text-lg font-semibold mb-2">Report management coming soon</h3>
+              <p className="text-sm text-muted-foreground max-w-sm mx-auto mb-6">
+                An advanced reporting system is under development with automated flagging, priority queues, and resolution workflows.
+              </p>
+              <div className="flex flex-wrap justify-center gap-3 text-xs text-muted-foreground">
+                <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-secondary">
+                  <Flag className="w-3 h-3" />
+                  User reports
+                </span>
+                <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-secondary">
+                  <Shield className="w-3 h-3" />
+                  Content moderation
+                </span>
+                <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-secondary">
+                  <Clock className="w-3 h-3" />
+                  Priority queues
+                </span>
+              </div>
+            </CardContent>
+          </Card>
+        ) : (
+          <>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Target</TableHead>
+                  <TableHead>Type</TableHead>
+                  <TableHead>Reason</TableHead>
+                  <TableHead>Reporter</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Actions</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-          {lastPage > 1 && (
-            <div className="flex justify-center gap-2 mt-4">
-              <Button variant="outline" size="sm" disabled={page === 1} onClick={() => fetchReports(page - 1)}>Prev</Button>
-              <Button variant="outline" size="sm" disabled={page === lastPage} onClick={() => fetchReports(page + 1)}>Next</Button>
-            </div>
-          )}
-        </>
-      )}
-    </div>
+              </TableHeader>
+              <TableBody>
+                {reports.map((r) => (
+                  <TableRow key={r.report_id}>
+                    <TableCell className="font-mono text-xs">{r.target_id.slice(0, 8)}…</TableCell>
+                    <TableCell><Badge variant="outline">{r.target_type}</Badge></TableCell>
+                    <TableCell className="max-w-xs truncate">{r.reason}</TableCell>
+                    <TableCell>{r.reporter?.name || 'Unknown'}</TableCell>
+                    <TableCell>
+                      <Badge variant={r.status === 'pending' ? 'outline' : 'secondary'}>{r.status}</Badge>
+                    </TableCell>
+                    <TableCell className="space-x-1">
+                      {r.status === 'pending' && (
+                        <>
+                          <Button variant="outline" size="sm" onClick={() => resolve(r.report_id, 'dismiss')}>Dismiss</Button>
+                          <Button variant="outline" size="sm" onClick={() => resolve(r.report_id, 'warn')}>Warn</Button>
+                          <Button variant="destructive" size="sm" onClick={() => resolve(r.report_id, 'remove')}>Remove</Button>
+                        </>
+                      )}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+            {lastPage > 1 && (
+              <div className="flex justify-center gap-2">
+                <Button variant="outline" size="sm" disabled={page === 1} onClick={() => fetchReports(page - 1)}>Prev</Button>
+                <Button variant="outline" size="sm" disabled={page === lastPage} onClick={() => fetchReports(page + 1)}>Next</Button>
+              </div>
+            )}
+          </>
+        )}
+      </div>
+    </DashboardLayout>
   )
 }

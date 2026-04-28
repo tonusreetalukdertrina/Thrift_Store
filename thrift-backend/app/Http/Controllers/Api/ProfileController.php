@@ -5,9 +5,9 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Helpers\ApiResponse;
 use App\Models\Listing;
+use App\Services\CloudinaryService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Storage;
 
 class ProfileController extends Controller
 {
@@ -41,14 +41,20 @@ class ProfileController extends Controller
                 'profile_photo' => ['image', 'mimes:jpeg,png,webp', 'max:5120'],
             ]);
 
-            // Delete old photo
+            $cloudinary = new CloudinaryService('profile_photos');
+
+            // Delete old photo if it's a Cloudinary URL
             if ($user->profile_photo_url) {
-                $oldPath = str_replace('/storage/', 'public/', $user->profile_photo_url);
-                Storage::delete($oldPath);
+                if ($cloudinary->isCloudinaryUrl($user->profile_photo_url)) {
+                    $cloudinary->deleteImage($user->profile_photo_url);
+                } else {
+                    // Fallback for legacy local storage
+                    $oldPath = str_replace('/storage/', 'public/', $user->profile_photo_url);
+                    \Illuminate\Support\Facades\Storage::delete($oldPath);
+                }
             }
 
-            $path = $request->file('profile_photo')->store('profile_photos', 'public');
-            $validated['profile_photo_url'] = '/storage/' . $path;
+            $validated['profile_photo_url'] = $cloudinary->uploadImage($request->file('profile_photo'));
         }
 
         $user->update($validated);

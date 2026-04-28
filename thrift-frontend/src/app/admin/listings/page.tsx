@@ -10,6 +10,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Skeleton } from '@/components/ui/skeleton'
 import { Search } from 'lucide-react'
 import { toast } from 'sonner'
+import DashboardLayout from '@/components/layout/DashboardLayout'
 
 const statusStyles: Record<string, string> = {
   draft: 'secondary',
@@ -59,53 +60,58 @@ export default function AdminListingsPage() {
   }
 
   return (
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
-      <h1 className="text-2xl font-bold mb-6">Listings</h1>
-      <div className="flex gap-2 mb-4">
-        <Input placeholder="Search by title…" value={q} onChange={(e) => setQ(e.target.value)} className="max-w-sm" />
-        <Button onClick={() => fetchListings(1)}><Search className="w-4 h-4" /></Button>
-      </div>
-      {loading ? (
-        <div className="space-y-2"><Skeleton className="h-8 w-full" /></div>
-      ) : (
-        <>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Title</TableHead>
-                <TableHead>Seller</TableHead>
-                <TableHead>Price</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {listings.map((l) => (
-                <TableRow key={l.listing_id}>
-                  <TableCell className="font-medium">{l.title}</TableCell>
-                  <TableCell>{l.seller?.name || 'Unknown'}</TableCell>
-                  <TableCell>${parseFloat(l.price).toFixed(2)}</TableCell>
-                  <TableCell>
-                    <Badge variant={statusStyles[l.status] as any}>{l.status}</Badge>
-                  </TableCell>
-                  <TableCell className="space-x-1">
-                    <Button variant="outline" size="sm" onClick={() => remove(l.listing_id)}>Archive</Button>
-                    {l.status === 'archived' && (
-                      <Button variant="outline" size="sm" onClick={() => restore(l.listing_id)}>Restore</Button>
-                    )}
-                  </TableCell>
+    <DashboardLayout role="admin">
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-2xl font-bold">Listings</h1>
+          <p className="text-sm text-muted-foreground">Manage all platform listings</p>
+        </div>
+        <div className="flex gap-2">
+          <Input placeholder="Search by title…" value={q} onChange={(e) => setQ(e.target.value)} className="max-w-sm" />
+          <Button onClick={() => fetchListings(1)}><Search className="w-4 h-4" /></Button>
+        </div>
+        {loading ? (
+          <div className="space-y-2"><Skeleton className="h-8 w-full" /></div>
+        ) : (
+          <>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Title</TableHead>
+                  <TableHead>Seller</TableHead>
+                  <TableHead>Price</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Actions</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-          {lastPage > 1 && (
-            <div className="flex justify-center gap-2 mt-4">
-              <Button variant="outline" size="sm" disabled={page === 1} onClick={() => fetchListings(page - 1)}>Prev</Button>
-              <Button variant="outline" size="sm" disabled={page === lastPage} onClick={() => fetchListings(page + 1)}>Next</Button>
-            </div>
-          )}
-        </>
-      )}
-    </div>
+              </TableHeader>
+              <TableBody>
+                {listings.map((l) => (
+                  <TableRow key={l.listing_id}>
+                    <TableCell className="font-medium">{l.title}</TableCell>
+                    <TableCell>{l.seller?.name || 'Unknown'}</TableCell>
+                    <TableCell>${parseFloat(l.price).toFixed(2)}</TableCell>
+                    <TableCell>
+                      <Badge variant={statusStyles[l.status] as any}>{l.status}</Badge>
+                    </TableCell>
+                    <TableCell className="space-x-1">
+                      <Button variant="outline" size="sm" onClick={() => remove(l.listing_id)}>Archive</Button>
+                      {l.status === 'archived' && (
+                        <Button variant="outline" size="sm" onClick={() => restore(l.listing_id)}>Restore</Button>
+                      )}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+            {lastPage > 1 && (
+              <div className="flex justify-center gap-2">
+                <Button variant="outline" size="sm" disabled={page === 1} onClick={() => fetchListings(page - 1)}>Prev</Button>
+                <Button variant="outline" size="sm" disabled={page === lastPage} onClick={() => fetchListings(page + 1)}>Next</Button>
+              </div>
+            )}
+          </>
+        )}
+      </div>
+    </DashboardLayout>
   )
 }

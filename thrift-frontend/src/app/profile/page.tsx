@@ -15,6 +15,10 @@ import { User as UserIcon } from 'lucide-react'
 
 const storageUrl = process.env.NEXT_PUBLIC_STORAGE_URL || ''
 
+function getImageUrl(path: string): string {
+  return path.startsWith('http') ? path : `${storageUrl}${path}`
+}
+
 export default function ProfilePage() {
   const { user, logout } = useAuthStore()
   const router = useRouter()
@@ -87,7 +91,7 @@ export default function ProfilePage() {
         <div className="flex items-center gap-4">
           <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center">
             {user?.profile_photo_url ? (
-              <img src={`${storageUrl}${user.profile_photo_url}`} alt="" className="w-full h-full rounded-full object-cover" />
+              <img src={getImageUrl(user.profile_photo_url)} alt="" className="w-full h-full rounded-full object-cover" />
             ) : (
               <UserIcon className="w-6 h-6 text-muted-foreground" />
             )}

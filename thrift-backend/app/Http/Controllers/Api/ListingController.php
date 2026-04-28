@@ -6,7 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Http\Helpers\ApiResponse;
 use App\Models\Listing;
 use App\Models\Notification;
+use App\Services\CloudinaryService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class ListingController extends Controller
@@ -78,7 +80,7 @@ class ListingController extends Controller
     public function show(string $id)
     {
         $listing = Listing::with([
-            'seller:user_id,name,profile_photo_url',
+            'seller:user_id,name,phone,profile_photo_url',
             'category:category_id,category_name',
         ])->where('listing_id', $id)->first();
 
@@ -125,10 +127,10 @@ class ListingController extends Controller
             'images.*.max'   => 'Each image must be under 5MB.',
         ]);
 
-        $imagePaths = [];
+        $cloudinary = new CloudinaryService('listings');
+        $imageUrls = [];
         foreach ($request->file('images') as $image) {
-            $path = $image->store('listings', 'public');
-            $imagePaths[] = '/storage/' . $path;
+            $imageUrls[] = $cloudinary->uploadImage($image);
         }
 
         $listing = Listing::create([
@@ -139,7 +141,7 @@ class ListingController extends Controller
             'description'  => $request->description,
             'price'        => $request->price,
             'condition'    => $request->condition,
-            'images'       => $imagePaths,
+            'images'       => $imageUrls,
             'status'       => 'draft',
             'location'     => $request->location,
             'expires_at'   => now()->addDays(60),
@@ -189,6 +191,9 @@ class ListingController extends Controller
         if (! $listing) {
             return ApiResponse::error('Listing not found or you do not own this listing', 404);
         }
+
+        $cloudinary = new CloudinaryService('listings');
+        $cloudinary->deleteImages($listing->images ?? []);
 
         $listing->update(['status' => 'archived']);
 

@@ -11,7 +11,7 @@ export const useNotificationStore = create<NotifState>((set) => ({
 
   fetchUnreadCount: async () => {
     try {
-      const { data } = await api.get('/notifications?per_page=1')
+      const { data } = await api.get('/notifications')
       set({ unreadCount: data.data.unread_count ?? 0 })
     } catch {
       // silently fail

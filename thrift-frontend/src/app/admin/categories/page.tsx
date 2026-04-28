@@ -9,6 +9,7 @@ import { Badge } from '@/components/ui/badge'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Skeleton } from '@/components/ui/skeleton'
 import { toast } from 'sonner'
+import DashboardLayout from '@/components/layout/DashboardLayout'
 
 export default function AdminCategoriesPage() {
   const [categories, setCategories] = useState<Category[]>([])
@@ -46,41 +47,46 @@ export default function AdminCategoriesPage() {
   }
 
   return (
-    <div className="max-w-3xl mx-auto px-4 sm:px-6 py-8">
-      <h1 className="text-2xl font-bold mb-6">Categories</h1>
+    <DashboardLayout role="admin">
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-2xl font-bold">Categories</h1>
+          <p className="text-sm text-muted-foreground">Manage product categories</p>
+        </div>
 
-      <div className="flex gap-2 mb-6">
-        <Input placeholder="Category name" value={newName} onChange={(e) => setNewName(e.target.value)} className="max-w-xs" />
-        <Input placeholder="Description (optional)" value={newDesc} onChange={(e) => setNewDesc(e.target.value)} className="max-w-sm" />
-        <Button onClick={create}>Add</Button>
-      </div>
+        <div className="flex gap-2">
+          <Input placeholder="Category name" value={newName} onChange={(e) => setNewName(e.target.value)} className="max-w-xs" />
+          <Input placeholder="Description (optional)" value={newDesc} onChange={(e) => setNewDesc(e.target.value)} className="max-w-sm" />
+          <Button onClick={create}>Add</Button>
+        </div>
 
-      {loading ? <Skeleton className="h-8 w-full" /> : (
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Name</TableHead>
-              <TableHead>Description</TableHead>
-              <TableHead>Active</TableHead>
-              <TableHead>Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {categories.map((c) => (
-              <TableRow key={c.category_id}>
-                <TableCell className="font-medium">{c.category_name}</TableCell>
-                <TableCell className="text-muted-foreground">{c.description || '—'}</TableCell>
-                <TableCell><Badge variant={c.is_active ? 'default' : 'secondary'}>{c.is_active ? 'Yes' : 'No'}</Badge></TableCell>
-                <TableCell>
-                  <Button variant="outline" size="sm" onClick={() => toggleActive(c)}>
-                    {c.is_active ? 'Deactivate' : 'Activate'}
-                  </Button>
-                </TableCell>
+        {loading ? <Skeleton className="h-8 w-full" /> : (
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Name</TableHead>
+                <TableHead>Description</TableHead>
+                <TableHead>Active</TableHead>
+                <TableHead>Actions</TableHead>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      )}
-    </div>
+            </TableHeader>
+            <TableBody>
+              {categories.map((c) => (
+                <TableRow key={c.category_id}>
+                  <TableCell className="font-medium">{c.category_name}</TableCell>
+                  <TableCell className="text-muted-foreground">{c.description || '—'}</TableCell>
+                  <TableCell><Badge variant={c.is_active ? 'default' : 'secondary'}>{c.is_active ? 'Yes' : 'No'}</Badge></TableCell>
+                  <TableCell>
+                    <Button variant="outline" size="sm" onClick={() => toggleActive(c)}>
+                      {c.is_active ? 'Deactivate' : 'Activate'}
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        )}
+      </div>
+    </DashboardLayout>
   )
 }

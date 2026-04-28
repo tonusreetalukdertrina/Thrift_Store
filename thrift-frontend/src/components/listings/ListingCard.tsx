@@ -13,7 +13,10 @@ const conditionStyles: Record<string, string> = {
 }
 
 export default function ListingCard({ listing }: { listing: Listing }) {
-  const img = listing.images?.[0] ? `${storageUrl}${listing.images[0]}` : null
+  const firstImage = listing.images?.[0]
+  const img = firstImage
+    ? (firstImage.startsWith('http') ? firstImage : `${storageUrl}${firstImage}`)
+    : null
 
   return (
     <Link href={`/listings/${listing.listing_id}`} className="group block">

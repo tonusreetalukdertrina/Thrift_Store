@@ -9,6 +9,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Skeleton } from '@/components/ui/skeleton'
 import { Search } from 'lucide-react'
 import { toast } from 'sonner'
+import DashboardLayout from '@/components/layout/DashboardLayout'
 
 interface AdminUser {
   user_id: string
@@ -54,57 +55,63 @@ export default function AdminUsersPage() {
   }
 
   return (
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
-      <h1 className="text-2xl font-bold mb-6">Users</h1>
-      <div className="flex gap-2 mb-4">
-        <Input placeholder="Search by name, email, phone…" value={q} onChange={(e) => setQ(e.target.value)} className="max-w-sm" />
-        <Button onClick={() => fetchUsers(1)}><Search className="w-4 h-4" /></Button>
-      </div>
+    <DashboardLayout role="admin">
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-2xl font-bold">Users</h1>
+          <p className="text-sm text-muted-foreground">Manage platform users</p>
+        </div>
 
-      {loading ? (
-        <div className="space-y-2"><Skeleton className="h-8 w-full" /><Skeleton className="h-8 w-full" /></div>
-      ) : (
-        <>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Name</TableHead>
-                <TableHead>Email</TableHead>
-                <TableHead>Phone</TableHead>
-                <TableHead>Role</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {users.map((u) => (
-                <TableRow key={u.user_id}>
-                  <TableCell className="font-medium">{u.name}</TableCell>
-                  <TableCell>{u.email}</TableCell>
-                  <TableCell>{u.phone}</TableCell>
-                  <TableCell><Badge variant="outline">{u.role}</Badge></TableCell>
-                  <TableCell>
-                    <Badge variant={u.is_blocked ? 'destructive' : 'secondary'}>
-                      {u.is_blocked ? 'Blocked' : 'Active'}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>
-                    <Button variant="outline" size="sm" onClick={() => toggleBlock(u.user_id, u.is_blocked)}>
-                      {u.is_blocked ? 'Unblock' : 'Block'}
-                    </Button>
-                  </TableCell>
+        <div className="flex gap-2">
+          <Input placeholder="Search by name, email, phone…" value={q} onChange={(e) => setQ(e.target.value)} className="max-w-sm" />
+          <Button onClick={() => fetchUsers(1)}><Search className="w-4 h-4" /></Button>
+        </div>
+
+        {loading ? (
+          <div className="space-y-2"><Skeleton className="h-8 w-full" /><Skeleton className="h-8 w-full" /></div>
+        ) : (
+          <>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Name</TableHead>
+                  <TableHead>Email</TableHead>
+                  <TableHead>Phone</TableHead>
+                  <TableHead>Role</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Actions</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-          {lastPage > 1 && (
-            <div className="flex justify-center gap-2 mt-4">
-              <Button variant="outline" size="sm" disabled={page === 1} onClick={() => fetchUsers(page - 1)}>Prev</Button>
-              <Button variant="outline" size="sm" disabled={page === lastPage} onClick={() => fetchUsers(page + 1)}>Next</Button>
-            </div>
-          )}
-        </>
-      )}
-    </div>
+              </TableHeader>
+              <TableBody>
+                {users.map((u) => (
+                  <TableRow key={u.user_id}>
+                    <TableCell className="font-medium">{u.name}</TableCell>
+                    <TableCell>{u.email}</TableCell>
+                    <TableCell>{u.phone}</TableCell>
+                    <TableCell><Badge variant="outline">{u.role}</Badge></TableCell>
+                    <TableCell>
+                      <Badge variant={u.is_blocked ? 'destructive' : 'secondary'}>
+                        {u.is_blocked ? 'Blocked' : 'Active'}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>
+                      <Button variant="outline" size="sm" onClick={() => toggleBlock(u.user_id, u.is_blocked)}>
+                        {u.is_blocked ? 'Unblock' : 'Block'}
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+            {lastPage > 1 && (
+              <div className="flex justify-center gap-2">
+                <Button variant="outline" size="sm" disabled={page === 1} onClick={() => fetchUsers(page - 1)}>Prev</Button>
+                <Button variant="outline" size="sm" disabled={page === lastPage} onClick={() => fetchUsers(page + 1)}>Next</Button>
+              </div>
+            )}
+          </>
+        )}
+      </div>
+    </DashboardLayout>
   )
 }

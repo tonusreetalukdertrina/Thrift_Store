@@ -62,8 +62,8 @@ export default function RegisterPage() {
           </div>
           <div className="space-y-2">
             <Label htmlFor="password">Password</Label>
-            <Input id="password" type="password" value={form.password} onChange={(e) => update('password', e.target.value)} required minLength={8} />
-            <p className="text-xs text-muted-foreground">Min 8 chars, with uppercase, lowercase, number &amp; special character</p>
+            <Input id="password" type="password" value={form.password} onChange={(e) => update('password', e.target.value)} required minLength={6} />
+            <p className="text-xs text-muted-foreground">Minimum 6 characters</p>
           </div>
           <Button type="submit" className="w-full" disabled={loading}>
             {loading ? <Spinner className="mr-2" /> : null}

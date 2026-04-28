@@ -18,8 +18,9 @@ export default function NotificationsPage() {
   const fetchNotifs = async () => {
     try {
       const { data } = await api.get('/notifications')
-      setNotifications(data.data.data || [])
-      setUnreadCount(data.data.unread_count || 0)
+      const notifData = data.data
+      setNotifications(notifData.notifications?.data || [])
+      setUnreadCount(notifData.unread_count || 0)
     } catch {
       setNotifications([])
     } finally {

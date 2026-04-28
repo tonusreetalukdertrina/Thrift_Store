@@ -20,20 +20,13 @@ class RegisterRequest extends FormRequest
             'name'     => ['required', 'string', 'max:255'],
             'email'    => ['required', 'email', 'unique:users,email'],
             'phone'    => ['required', 'string', 'unique:users,phone'],
-            'password' => [
-                'required',
-                'string',
-                'min:8',
-                'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).+$/',
-            ],
+            'password' => ['required', 'string', 'min:6'],
         ];
     }
 
     public function messages(): array
     {
-        return [
-            'password.regex' => 'Password must contain uppercase, lowercase, a number, and a special character.',
-        ];
+        return [];
     }
 
     protected function failedValidation(Validator $validator)
