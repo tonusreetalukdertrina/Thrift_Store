@@ -16,7 +16,13 @@ class ListingController extends Controller
         $query = Listing::with([
             'seller:user_id,name',
             'category:category_id,category_name',
-        ])->where('status', 'active');
+        ]);
+
+        if ($request->filled('interested_buyer_id')) {
+            $query->where('interested_buyer_id', $request->interested_buyer_id);
+        } else {
+            $query->where('status', 'active');
+        }
 
         if ($request->filled('q') && strlen(trim($request->q)) > 0) {
             $search = trim($request->q);
@@ -83,6 +89,10 @@ class ListingController extends Controller
         $user = auth('api')->user();
         if ($user && ($user->user_id === $listing->seller_id || $user->role === 'admin')) {
             $listing->load('interestedBuyer:user_id,name,phone');
+        }
+
+        if ($user && $listing->interested_buyer_id === $user->user_id) {
+            $listing->load('seller:user_id,name,phone,profile_photo_url');
         }
 
         $listing->seller_avg_rating = $this->getSellerAvgRating($listing->seller_id);
@@ -195,7 +205,7 @@ class ListingController extends Controller
         }
 
         $request->validate([
-            'status' => ['required', 'in:active,interested,sold,archived'],
+            'status' => ['required', 'in:active,interested,sold,archived,draft'],
         ]);
 
         $newStatus = $request->status;
@@ -248,6 +258,7 @@ class ListingController extends Controller
                 default  => false,
             },
             'draft' => match ($new) {
+                'active'   => $listing->seller_id === $user->user_id,
                 'archived' => $listing->seller_id === $user->user_id,
                 default    => false,
             },

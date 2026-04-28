@@ -1,0 +1,399 @@
+[2026-04-27T23:27:36.224Z] [info] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[2026-04-27T23:27:36.448Z] [log] [HMR] connected
+[2026-04-27T23:27:48.631Z] [error] Access to XMLHttpRequest at 'http://localhost:8001/api/v1/auth/register' from origin 'http://localhost:3001' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: The 'Access-Control-Allow-Origin' header has a value 'http://localhost:3000' that is not equal to the supplied origin.
+[2026-04-27T23:27:48.633Z] [error] Failed to load resource: net::ERR_FAILED
+[2026-04-27T23:30:05.261Z] [log] [Fast Refresh] rebuilding
+[2026-04-27T23:30:05.680Z] [log] [Fast Refresh] done in 550ms
+[2026-04-27T23:30:16.872Z] [log] [Fast Refresh] rebuilding
+[2026-04-27T23:30:17.133Z] [log] [Fast Refresh] done in 361ms
+[2026-04-27T23:31:45.457Z] [log] [Fast Refresh] rebuilding
+[2026-04-27T23:31:45.987Z] [log] [Fast Refresh] done in 568ms
+[2026-04-27T23:31:46.299Z] [info] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[2026-04-27T23:31:46.427Z] [log] [HMR] connected
+[2026-04-27T23:35:55.375Z] [log] [Fast Refresh] rebuilding
+[2026-04-27T23:35:55.609Z] [log] [Fast Refresh] done in 369ms
+[2026-04-27T23:36:04.746Z] [info] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[2026-04-27T23:36:04.949Z] [log] [HMR] connected
+[2026-04-27T23:36:53.600Z] [info] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[2026-04-27T23:36:53.776Z] [log] [HMR] connected
+[2026-04-27T23:37:06.994Z] [error] WebSocket connection to 'ws://localhost:3001/_next/webpack-hmr?id=lkUdahMBr_TsWR2dj-WBc' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED
+[2026-04-27T23:37:08.501Z] [log] [HMR] connected
+[2026-04-27T23:37:09.226Z] [info] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[2026-04-27T23:37:09.283Z] [log] [HMR] connected
+[2026-04-27T23:37:45.294Z] [info] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[2026-04-27T23:37:45.369Z] [log] [HMR] connected
+[2026-04-27T23:39:50.974Z] [error] WebSocket connection to 'ws://localhost:3001/_next/webpack-hmr?id=CRyMNcaPsgzQs3f-gskPq' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED
+[2026-04-27T23:39:51.975Z] [error] WebSocket connection to 'ws://localhost:3001/_next/webpack-hmr?id=CRyMNcaPsgzQs3f-gskPq' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED
+[2026-04-27T23:39:52.976Z] [error] WebSocket connection to 'ws://localhost:3001/_next/webpack-hmr?id=CRyMNcaPsgzQs3f-gskPq' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED
+[2026-04-27T23:39:53.978Z] [error] WebSocket connection to 'ws://localhost:3001/_next/webpack-hmr?id=CRyMNcaPsgzQs3f-gskPq' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED
+[2026-04-27T23:39:54.979Z] [error] WebSocket connection to 'ws://localhost:3001/_next/webpack-hmr?id=CRyMNcaPsgzQs3f-gskPq' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED
+[2026-04-27T23:39:59.980Z] [error] WebSocket connection to 'ws://localhost:3001/_next/webpack-hmr?id=CRyMNcaPsgzQs3f-gskPq' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED
+[2026-04-27T23:40:04.981Z] [error] WebSocket connection to 'ws://localhost:3001/_next/webpack-hmr?id=CRyMNcaPsgzQs3f-gskPq' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED
+[2026-04-27T23:40:09.985Z] [error] WebSocket connection to 'ws://localhost:3001/_next/webpack-hmr?id=CRyMNcaPsgzQs3f-gskPq' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED
+[2026-04-27T23:40:14.985Z] [error] WebSocket connection to 'ws://localhost:3001/_next/webpack-hmr?id=CRyMNcaPsgzQs3f-gskPq' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED
+[2026-04-27T23:40:19.987Z] [error] WebSocket connection to 'ws://localhost:3001/_next/webpack-hmr?id=CRyMNcaPsgzQs3f-gskPq' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED
+[2026-04-27T23:40:24.989Z] [error] WebSocket connection to 'ws://localhost:3001/_next/webpack-hmr?id=CRyMNcaPsgzQs3f-gskPq' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED
+[2026-04-27T23:40:29.992Z] [error] WebSocket connection to 'ws://localhost:3001/_next/webpack-hmr?id=CRyMNcaPsgzQs3f-gskPq' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED
+[2026-04-27T23:46:58.694Z] [info] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[2026-04-27T23:46:58.890Z] [log] [HMR] connected
+[2026-04-27T23:48:20.418Z] [log] [Fast Refresh] rebuilding
+[2026-04-27T23:48:20.746Z] [log] [Fast Refresh] done in 363ms
+[2026-04-27T23:50:44.619Z] [log] [Fast Refresh] rebuilding
+[2026-04-27T23:50:44.682Z] [error] ./app/globals.css:1849:8
+Parsing CSS source code failed
+  1847 |   }
+  1848 | }
+> 1849 | @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Mono:wght@400;500&display=swap');
+       |        ^
+  1850 | *, *::before, *::after {
+  1851 |   box-sizing: border-box;
+  1852 |   margin: 0;
+
+@import rules must precede all rules aside from @charset and @layer statements
+
+Generated code of PostCSS transform of file content of app/globals.css:
+./app/globals.css:1849:8
+  1847 |   }
+  1848 | }
+> 1849 | @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Mono:wght@400;500&display=swap');
+       |        ^
+  1850 | *, *::before, *::after {
+  1851 |   box-sizing: border-box;
+  1852 |   margin: 0;
+
+Import trace:
+  Client Component Browser:
+    ./app/globals.css [Client Component Browser]
+    ./app/layout.tsx [Client Component Browser]
+    ./app/layout.tsx [Server Component]
+[2026-04-27T23:50:44.820Z] [error] ./app/globals.css:1849:8
+Parsing CSS source code failed
+  1847 |   }
+  1848 | }
+> 1849 | @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Mono:wght@400;500&display=swap');
+       |        ^
+  1850 | *, *::before, *::after {
+  1851 |   box-sizing: border-box;
+  1852 |   margin: 0;
+
+@import rules must precede all rules aside from @charset and @layer statements
+
+Generated code of PostCSS transform of file content of app/globals.css:
+./app/globals.css:1849:8
+  1847 |   }
+  1848 | }
+> 1849 | @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Mono:wght@400;500&display=swap');
+       |        ^
+  1850 | *, *::before, *::after {
+  1851 |   box-sizing: border-box;
+  1852 |   margin: 0;
+
+Import trace:
+  Client Component Browser:
+    ./app/globals.css [Client Component Browser]
+    ./app/layout.tsx [Client Component Browser]
+    ./app/layout.tsx [Server Component]
+[2026-04-27T23:50:44.861Z] [log] [Fast Refresh] rebuilding
+[2026-04-27T23:50:48.713Z] [log] [Fast Refresh] rebuilding
+[2026-04-27T23:50:48.811Z] [error] ./app/globals.css:1849:8
+Parsing CSS source code failed
+  1847 |   }
+  1848 | }
+> 1849 | @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Mono:wght@400;500&display=swap');
+       |        ^
+  1850 | *, *::before, *::after {
+  1851 |   box-sizing: border-box;
+  1852 |   margin: 0;
+
+@import rules must precede all rules aside from @charset and @layer statements
+
+Generated code of PostCSS transform of file content of app/globals.css:
+./app/globals.css:1849:8
+  1847 |   }
+  1848 | }
+> 1849 | @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Mono:wght@400;500&display=swap');
+       |        ^
+  1850 | *, *::before, *::after {
+  1851 |   box-sizing: border-box;
+  1852 |   margin: 0;
+
+Import trace:
+  Client Component Browser:
+    ./app/globals.css [Client Component Browser]
+    ./app/layout.tsx [Client Component Browser]
+    ./app/layout.tsx [Server Component]
+[2026-04-27T23:50:49.169Z] [error] ./app/globals.css:1849:8
+Parsing CSS source code failed
+  1847 |   }
+  1848 | }
+> 1849 | @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Mono:wght@400;500&display=swap');
+       |        ^
+  1850 | *, *::before, *::after {
+  1851 |   box-sizing: border-box;
+  1852 |   margin: 0;
+
+@import rules must precede all rules aside from @charset and @layer statements
+
+Generated code of PostCSS transform of file content of app/globals.css:
+./app/globals.css:1849:8
+  1847 |   }
+  1848 | }
+> 1849 | @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Mono:wght@400;500&display=swap');
+       |        ^
+  1850 | *, *::before, *::after {
+  1851 |   box-sizing: border-box;
+  1852 |   margin: 0;
+
+Import trace:
+  Client Component Browser:
+    ./app/globals.css [Client Component Browser]
+    ./app/layout.tsx [Client Component Browser]
+    ./app/layout.tsx [Server Component]
+[2026-04-27T23:50:49.210Z] [log] [Fast Refresh] rebuilding
+[2026-04-27T23:52:24.125Z] [error] Failed to load resource: the server responded with a status of 500 (Internal Server Error)
+[2026-04-27T23:52:24.300Z] [info] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[2026-04-27T23:52:24.406Z] [log] [HMR] connected
+[2026-04-27T23:52:24.407Z] [error] ./app/globals.css:1849:8
+Parsing CSS source code failed
+  1847 |   }
+  1848 | }
+> 1849 | @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Mono:wght@400;500&display=swap');
+       |        ^
+  1850 | *, *::before, *::after {
+  1851 |   box-sizing: border-box;
+  1852 |   margin: 0;
+
+@import rules must precede all rules aside from @charset and @layer statements
+
+Generated code of PostCSS transform of file content of app/globals.css:
+./app/globals.css:1849:8
+  1847 |   }
+  1848 | }
+> 1849 | @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Mono:wght@400;500&display=swap');
+       |        ^
+  1850 | *, *::before, *::after {
+  1851 |   box-sizing: border-box;
+  1852 |   margin: 0;
+
+Import trace:
+  Client Component Browser:
+    ./app/globals.css [Client Component Browser]
+    ./app/layout.tsx [Client Component Browser]
+    ./app/layout.tsx [Server Component]
+[2026-04-27T23:52:24.407Z] [error] ./app/globals.css:1849:8
+Parsing CSS source code failed
+  1847 |   }
+  1848 | }
+> 1849 | @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Mono:wght@400;500&display=swap');
+       |        ^
+  1850 | *, *::before, *::after {
+  1851 |   box-sizing: border-box;
+  1852 |   margin: 0;
+
+@import rules must precede all rules aside from @charset and @layer statements
+
+Generated code of PostCSS transform of file content of app/globals.css:
+./app/globals.css:1849:8
+  1847 |   }
+  1848 | }
+> 1849 | @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Mono:wght@400;500&display=swap');
+       |        ^
+  1850 | *, *::before, *::after {
+  1851 |   box-sizing: border-box;
+  1852 |   margin: 0;
+
+Import trace:
+  Client Component Browser:
+    ./app/globals.css [Client Component Browser]
+    ./app/layout.tsx [Client Component Browser]
+    ./app/layout.tsx [Server Component]
+[2026-04-27T23:52:24.489Z] [clear] console.clear
+[2026-04-27T23:52:24.490Z] [error] ./app/globals.css:1849:8
+Parsing CSS source code failed
+  1847 |   }
+  1848 | }
+> 1849 | @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Mono:wght@400;500&display=swap');
+       |        ^
+  1850 | *, *::before, *::after {
+  1851 |   box-sizing: border-box;
+  1852 |   margin: 0;
+
+@import rules must precede all rules aside from @charset and @layer statements
+
+Generated code of PostCSS transform of file content of app/globals.css:
+./app/globals.css:1849:8
+  1847 |   }
+  1848 | }
+> 1849 | @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Mono:wght@400;500&display=swap');
+       |        ^
+  1850 | *, *::before, *::after {
+  1851 |   box-sizing: border-box;
+  1852 |   margin: 0;
+
+Import trace:
+  Client Component Browser:
+    ./app/globals.css [Client Component Browser]
+    ./app/layout.tsx [Client Component Browser]
+    ./app/layout.tsx [Server Component]
+[2026-04-27T23:52:24.490Z] [clear] console.clear
+[2026-04-27T23:52:24.490Z] [error] ./app/globals.css:1849:8
+Parsing CSS source code failed
+  1847 |   }
+  1848 | }
+> 1849 | @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Mono:wght@400;500&display=swap');
+       |        ^
+  1850 | *, *::before, *::after {
+  1851 |   box-sizing: border-box;
+  1852 |   margin: 0;
+
+@import rules must precede all rules aside from @charset and @layer statements
+
+Generated code of PostCSS transform of file content of app/globals.css:
+./app/globals.css:1849:8
+  1847 |   }
+  1848 | }
+> 1849 | @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Mono:wght@400;500&display=swap');
+       |        ^
+  1850 | *, *::before, *::after {
+  1851 |   box-sizing: border-box;
+  1852 |   margin: 0;
+
+Import trace:
+  Client Component Browser:
+    ./app/globals.css [Client Component Browser]
+    ./app/layout.tsx [Client Component Browser]
+    ./app/layout.tsx [Server Component]
+[2026-04-27T23:52:24.587Z] [log] [Fast Refresh] rebuilding
+[2026-04-27T23:52:29.785Z] [clear] console.clear
+[2026-04-27T23:52:29.785Z] [error] ./app/globals.css:1849:8
+Parsing CSS source code failed
+  1847 |   }
+  1848 | }
+> 1849 | @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Mono:wght@400;500&display=swap');
+       |        ^
+  1850 | *, *::before, *::after {
+  1851 |   box-sizing: border-box;
+  1852 |   margin: 0;
+
+@import rules must precede all rules aside from @charset and @layer statements
+
+Generated code of PostCSS transform of file content of app/globals.css:
+./app/globals.css:1849:8
+  1847 |   }
+  1848 | }
+> 1849 | @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Mono:wght@400;500&display=swap');
+       |        ^
+  1850 | *, *::before, *::after {
+  1851 |   box-sizing: border-box;
+  1852 |   margin: 0;
+
+Import trace:
+  Client Component Browser:
+    ./app/globals.css [Client Component Browser]
+    ./app/layout.tsx [Client Component Browser]
+    ./app/layout.tsx [Server Component]
+[2026-04-27T23:52:29.850Z] [log] [Fast Refresh] rebuilding
+[2026-04-27T23:52:50.613Z] [log] [Fast Refresh] rebuilding
+[2026-04-27T23:52:50.658Z] [clear] console.clear
+[2026-04-27T23:52:50.659Z] [log] [Fast Refresh] done in 98ms
+[2026-04-27T23:52:50.813Z] [info] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[2026-04-27T23:52:51.006Z] [log] [HMR] connected
+[2026-04-27T23:52:55.475Z] [log] [Fast Refresh] rebuilding
+[2026-04-27T23:52:56.120Z] [warning] [Fast Refresh] performing full reload
+
+Fast Refresh will perform a full reload when you edit a file that's imported by modules outside of the React rendering tree.
+You might have a file which exports a React component but also exports a value that is imported by a non-React component file.
+Consider migrating the non-React component export to a separate file and importing it into both files.
+
+It is also possible the parent component of the component you edited is a class component, which disables Fast Refresh.
+Fast Refresh requires at least one parent function component in your React tree.
+[2026-04-27T23:52:56.258Z] [log] [Fast Refresh] done in 721ms
+[2026-04-27T23:52:56.386Z] [log] [Fast Refresh] rebuilding
+[2026-04-27T23:52:56.846Z] [log] [Fast Refresh] done in 557ms
+[2026-04-27T23:52:56.886Z] [error] Failed to load resource: the server responded with a status of 500 (Internal Server Error)
+[2026-04-27T23:52:57.344Z] [info] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[2026-04-27T23:52:57.526Z] [log] [HMR] connected
+[2026-04-27T23:52:59.256Z] [log] [Fast Refresh] rebuilding
+[2026-04-27T23:52:59.257Z] [warning] [Fast Refresh] performing full reload
+
+Fast Refresh will perform a full reload when you edit a file that's imported by modules outside of the React rendering tree.
+You might have a file which exports a React component but also exports a value that is imported by a non-React component file.
+Consider migrating the non-React component export to a separate file and importing it into both files.
+
+It is also possible the parent component of the component you edited is a class component, which disables Fast Refresh.
+Fast Refresh requires at least one parent function component in your React tree.
+[2026-04-27T23:52:59.261Z] [warning] [Fast Refresh] performing full reload because your application had an unrecoverable error
+[2026-04-27T23:52:59.326Z] [log] [Fast Refresh] done in 53ms
+[2026-04-27T23:52:59.480Z] [info] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[2026-04-27T23:52:59.520Z] [log] [HMR] connected
+[2026-04-27T23:53:07.552Z] [log] [Fast Refresh] rebuilding
+[2026-04-27T23:53:08.001Z] [log] [Fast Refresh] done in 547ms
+[2026-04-27T23:53:12.702Z] [log] [Fast Refresh] rebuilding
+[2026-04-27T23:53:13.447Z] [log] [Fast Refresh] done in 692ms
+[2026-04-27T23:53:13.922Z] [info] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[2026-04-27T23:53:13.961Z] [log] [HMR] connected
+[2026-04-27T23:53:20.946Z] [error] WebSocket connection to 'ws://localhost:3001/_next/webpack-hmr?id=NIGGu6lfkD4Rakq3KRsPx' failed: 
+[2026-04-27T23:53:21.952Z] [log] [HMR] connected
+[2026-04-27T23:54:54.556Z] [error] WebSocket connection to 'ws://localhost:3001/_next/webpack-hmr?id=NIGGu6lfkD4Rakq3KRsPx' failed: 
+[2026-04-27T23:54:55.556Z] [log] [HMR] connected
+[2026-04-27T23:55:19.287Z] [log] [Fast Refresh] rebuilding
+[2026-04-28T00:01:19.628Z] [error] WebSocket connection to 'ws://localhost:3001/_next/webpack-hmr?id=NIGGu6lfkD4Rakq3KRsPx' failed: 
+[2026-04-28T00:01:20.630Z] [log] [HMR] connected
+[2026-04-28T00:02:22.219Z] [error] WebSocket connection to 'ws://localhost:3001/_next/webpack-hmr?id=NIGGu6lfkD4Rakq3KRsPx' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED
+[2026-04-28T00:02:23.221Z] [error] WebSocket connection to 'ws://localhost:3001/_next/webpack-hmr?id=NIGGu6lfkD4Rakq3KRsPx' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED
+[2026-04-28T00:02:24.222Z] [error] WebSocket connection to 'ws://localhost:3001/_next/webpack-hmr?id=NIGGu6lfkD4Rakq3KRsPx' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED
+[2026-04-28T00:02:25.224Z] [error] WebSocket connection to 'ws://localhost:3001/_next/webpack-hmr?id=NIGGu6lfkD4Rakq3KRsPx' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED
+[2026-04-28T00:02:26.225Z] [error] WebSocket connection to 'ws://localhost:3001/_next/webpack-hmr?id=NIGGu6lfkD4Rakq3KRsPx' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED
+[2026-04-28T00:02:31.227Z] [error] WebSocket connection to 'ws://localhost:3001/_next/webpack-hmr?id=NIGGu6lfkD4Rakq3KRsPx' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED
+[2026-04-28T00:02:36.230Z] [error] WebSocket connection to 'ws://localhost:3001/_next/webpack-hmr?id=NIGGu6lfkD4Rakq3KRsPx' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED
+[2026-04-28T00:02:41.231Z] [error] WebSocket connection to 'ws://localhost:3001/_next/webpack-hmr?id=NIGGu6lfkD4Rakq3KRsPx' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED
+[2026-04-28T00:02:46.233Z] [error] WebSocket connection to 'ws://localhost:3001/_next/webpack-hmr?id=NIGGu6lfkD4Rakq3KRsPx' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED
+[2026-04-28T00:02:51.234Z] [error] WebSocket connection to 'ws://localhost:3001/_next/webpack-hmr?id=NIGGu6lfkD4Rakq3KRsPx' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED
+[2026-04-28T00:02:56.237Z] [error] WebSocket connection to 'ws://localhost:3001/_next/webpack-hmr?id=NIGGu6lfkD4Rakq3KRsPx' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED
+[2026-04-28T00:03:01.243Z] [error] WebSocket connection to 'ws://localhost:3001/_next/webpack-hmr?id=NIGGu6lfkD4Rakq3KRsPx' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED
+[2026-04-28T00:18:13.235Z] [info] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[2026-04-28T00:18:13.443Z] [log] [HMR] connected
+[2026-04-28T00:20:01.251Z] [log] [Fast Refresh] rebuilding
+[2026-04-28T00:20:01.323Z] [log] [Fast Refresh] done in 173ms
+[2026-04-28T00:20:30.600Z] [log] [Fast Refresh] rebuilding
+[2026-04-28T00:20:31.089Z] [log] [Fast Refresh] done in 589ms
+[2026-04-28T00:21:09.340Z] [log] [Fast Refresh] rebuilding
+[2026-04-28T00:21:09.960Z] [log] [Fast Refresh] done in 720ms
+[2026-04-28T00:21:13.762Z] [log] [Fast Refresh] rebuilding
+[2026-04-28T00:21:14.149Z] [log] [Fast Refresh] done in 488ms
+[2026-04-28T00:21:24.992Z] [log] [Fast Refresh] rebuilding
+[2026-04-28T00:21:25.408Z] [log] [Fast Refresh] done in 516ms
+[2026-04-28T00:21:28.915Z] [log] [Fast Refresh] rebuilding
+[2026-04-28T00:21:29.315Z] [log] [Fast Refresh] done in 500ms
+[2026-04-28T00:24:28.237Z] [log] [Fast Refresh] rebuilding
+[2026-04-28T00:24:28.390Z] [log] [Fast Refresh] done in 229ms
+[2026-04-28T00:25:39.894Z] [log] [Fast Refresh] rebuilding
+[2026-04-28T00:25:40.534Z] [log] [Fast Refresh] done in 740ms
+[2026-04-28T00:30:43.357Z] [log] [Fast Refresh] rebuilding
+[2026-04-28T00:30:43.928Z] [log] [Fast Refresh] done in 666ms
+[2026-04-28T00:30:45.973Z] [log] [Fast Refresh] rebuilding
+[2026-04-28T00:30:46.452Z] [log] [Fast Refresh] done in 578ms
+[2026-04-28T00:30:52.437Z] [log] [Fast Refresh] rebuilding
+[2026-04-28T00:30:52.867Z] [log] [Fast Refresh] done in 530ms
+[2026-04-28T00:31:39.365Z] [log] [Fast Refresh] rebuilding
+[2026-04-28T00:31:40.124Z] [log] [Fast Refresh] done in 859ms
+[2026-04-28T00:32:56.428Z] [log] [Fast Refresh] rebuilding
+[2026-04-28T00:32:57.011Z] [log] [Fast Refresh] done in 532ms
+[2026-04-28T00:32:57.178Z] [log] [Fast Refresh] rebuilding
+[2026-04-28T00:32:57.201Z] [log] [Fast Refresh] done in 121ms
+[2026-04-28T00:36:11.168Z] [log] [Fast Refresh] rebuilding
+[2026-04-28T00:36:11.203Z] [log] [Fast Refresh] done in 134ms
+[2026-04-28T00:36:20.653Z] [log] [Fast Refresh] rebuilding
+[2026-04-28T00:36:20.938Z] [log] [Fast Refresh] done in 383ms
+[2026-04-28T00:36:26.115Z] [log] [Fast Refresh] rebuilding
+[2026-04-28T00:36:26.263Z] [log] [Fast Refresh] done in 218ms
+[2026-04-28T00:36:39.273Z] [log] [Fast Refresh] rebuilding
+[2026-04-28T00:36:39.283Z] [log] [Fast Refresh] done in 108ms
+[2026-04-28T00:36:54.378Z] [log] [Fast Refresh] rebuilding
+[2026-04-28T00:36:54.458Z] [log] [Fast Refresh] done in 155ms
+[2026-04-28T00:37:01.923Z] [log] [Fast Refresh] rebuilding
+[2026-04-28T00:37:02.047Z] [log] [Fast Refresh] done in 198ms
+[2026-04-28T00:37:23.391Z] [log] [Fast Refresh] rebuilding
+[2026-04-28T00:37:23.413Z] [log] [Fast Refresh] done in 69ms
+[2026-04-28T00:41:06.946Z] [log] [Fast Refresh] rebuilding
+[2026-04-28T00:41:07.953Z] [log] [Fast Refresh] done in 1107ms
