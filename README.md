@@ -1,35 +1,53 @@
 # 🛍️ Thrift Store Project
 
-Welcome to the **Thrift Store** project! This repository contains a full-stack application with a Laravel backend and a Next.js frontend. Follow the instructions below to get the project up and running on your local machine.
+A full-stack **Thrift Store** application built with a **Laravel backend** and a **Next.js frontend**.
+
+---
+
+## 🧰 Tech Stack
+
+### Backend
+
+* Laravel 11.x
+* PostgreSQL
+* JWT Authentication
+
+### Frontend
+
+* Next.js 15.x
+* Tailwind CSS
+* Framer Motion
 
 ---
 
 ## 🛠️ Prerequisites
 
-Before you begin, ensure you have the following installed:
+Make sure you have installed:
 
-*   **PHP** (>= 8.3)
-*   **Composer** (Latest version)
-*   **Node.js** (>= 18.x)
-*   **npm** (Latest version)
-*   **postgresSQL** (must be running in the background)
+* PHP >= 8.3
+* Composer (latest)
+* Node.js >= 18.x
+* npm (latest)
+* PostgreSQL (running)
 
 ---
 
 ## 🚀 Getting Started
 
-Follow these steps in order to set up the project. **Do not skip any steps.**
+Follow these steps carefully.
 
-### 1. Clone the Repository
+---
+
+## 1️⃣ Clone the Repository
 
 ```bash
 git clone https://github.com/betopia-btrp/Thrift_Store.git
 cd Thrift_Store
 ```
 
-### 2. Backend Setup (Laravel)
+---
 
-Navigate to the backend directory and set up the environment.
+## 2️⃣ Backend Setup (Laravel)
 
 ```bash
 cd thrift-backend
@@ -40,77 +58,139 @@ composer install
 # Create environment file
 cp .env.example .env
 
-# Generate application key
+# Generate app key
 php artisan key:generate
 ```
 
-#### 🗄️ Database Configuration
-Open the `.env` file in `thrift-backend` and ensure your database connection details are correct:
+---
+
+### 🔐 Environment Configuration (Backend)
+
+Open `thrift-backend/.env` and configure:
+
 ```env
-DB_CONNECTION=mysql
+APP_NAME=Laravel
+APP_ENV=local
+APP_KEY= # generated automatically
+APP_DEBUG=true
+APP_URL=http://localhost:9000
+
+DB_CONNECTION=pgsql
 DB_HOST=127.0.0.1
-DB_PORT=3306
+DB_PORT=5432
 DB_DATABASE=your_database_name
 DB_USERNAME=your_username
 DB_PASSWORD=your_password
+
+JWT_SECRET=your_jwt_secret_here
+
+STRIPE_KEY=your_stripe_public_key
+STRIPE_SECRET=your_stripe_secret_key
+STRIPE_WEBHOOK_SECRET=your_webhook_secret
+
+CLOUDINARY_CLOUD_NAME=your_cloud_name
+CLOUDINARY_API_KEY=your_api_key
+CLOUDINARY_API_SECRET=your_api_secret
 ```
 
-#### 🏗️ Migration and Seeding
-Once the database is configured, run the migrations and seed the data:
+> ⚠️ **Important**
+>
+> * Never commit `.env` files
+> * Never expose real API keys publicly
+> * Always use your own credentials
+
+---
+
+### 🗄️ Database Setup
+
 ```bash
 php artisan migrate:fresh --seed
 ```
 
-#### ▶️ Run the Backend
-Start the Laravel development server on port 9000:
+---
+
+### ▶️ Run Backend
+
 ```bash
 php -S localhost:9000 -t public
 ```
 
-> [!IMPORTANT]  
-> ### ⚠️ Important: Ignore the Home Page Error
-> When you navigate to `http://localhost:9000`, you might see an error message. **Please ignore this error.** The backend is designed to serve API requests, and this message does not affect the application's functionality.
->
-> ![Laravel Home Error](imgforRead/laravelHomeError.png)
+📍 Backend runs at:
+http://localhost:9000
+
+> ⚠️ You may see an error on the root URL — this is expected.
+> The backend serves API endpoints only.
 
 ---
 
-### 3. Frontend Setup (Next.js)
+## 3️⃣ Frontend Setup (Next.js)
 
-Open a **new terminal window**, navigate to the frontend directory, and set up the environment.
+Open a new terminal:
 
 ```bash
 cd thrift-frontend
 
-# Install dependencies
 npm install
-
-# Create environment file
-# Create a .env.local file in the thrift-frontend root and add the following:
-echo "NEXT_PUBLIC_API_URL=http://localhost:9000/api/v1" > .env.local
 ```
 
-#### ▶️ Run the Frontend
-Start the Next.js development server:
+---
+
+### 🔐 Environment Configuration (Frontend)
+
+Create a file:
+
+```
+thrift-frontend/.env.local
+```
+
+Add:
+
+```env
+NEXT_PUBLIC_API_URL=http://localhost:9000/api/v1
+```
+
+---
+
+### ▶️ Run Frontend
+
 ```bash
 npm run dev
 ```
 
-The frontend will be available at:  
-[**http://localhost:3001**](http://localhost:3001)
+📍 Frontend runs at:
+http://localhost:3001
 
 ---
 
 ## 📂 Project Structure
 
-*   `thrift-backend/`: Laravel 11.x API.
-*   `thrift-frontend/`: Next.js 15.x with Tailwind CSS and Framer Motion.
-*   `imgforRead/`: Documentation assets.
-*   `db_schema.sql`: Database schema reference.
+```
+Thrift_Store/
+├── thrift-backend/     # Laravel API
+├── thrift-frontend/    # Next.js frontend
+├── imgforRead/         # Documentation assets
+├── db_schema.sql       # Database schema
+```
+
+---
+
+## 🔒 Security Notes
+
+* Do NOT commit `.env` files
+* Rotate keys immediately if exposed
+* Use `.env.example` for safe placeholders only
 
 ---
 
 ## 🤝 Contributing
 
-Feel free to open issues or submit pull requests to improve the project!
+Contributions are welcome!
 
+* Open an issue
+* Submit a pull request
+
+---
+
+## 📄 License
+
+This project is for educational purposes.
